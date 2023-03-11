@@ -1,0 +1,305 @@
+<div class="page-header-container">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h4>
+                        <span>WORK ALLOT VIEW LIST</span>         
+                        <span class="float-right">
+                            <download-ctrl (click)="onDownloadExcelClicked();"></download-ctrl>
+                        </span>        
+                    </h4>    
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 search-container">
+                <form novalidate [formGroup]="serviceReportSearchForm" (ngSubmit)="onWorkDetailsSearched();">
+                    <div class="row">
+                        <!-- <div class="col-lg-2">                    
+                            <div class="search-label-container"><label>Status</label></div>
+                            <select class="form-control" formControlName="serviceReportStatus">
+                                <option value="all">Select</option>
+                                <option value="all">All</option>
+                                <option value="completed">Completed</option>
+                                <option value="not completed">Not Completed</option>
+                            </select>
+                        </div> -->
+                        <div class="col-lg-2">
+                            <div class="search-label-container"><label>From</label></div>
+                            <input formControlName="dateFrom" class="form-control"  type="date"/>  
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="search-label-container"><label>To</label></div>
+                            <input formControlName="dateTo" class="form-control" type="date" />  
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="search-label-container"><label>Search</label></div>
+                            <input formControlName="searchKeyWord" class="form-control" />  
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="search-label-container"><label>Within Guarantee Period</label></div>
+                            <select class="form-control" formControlName="gurenteePeriod">
+                                <option value="all">Select</option>
+                                <option value="all">All</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select> 
+                        </div>
+                        <div class="col-lg-3 pt-4">                    
+                            <span class="float-right">
+                                <button class="btn btn-info" type="submit">Search</button>  
+                                <button class="btn btn-danger" type="reset">Reset</button>
+                            </span>
+                        </div>
+                        <!--<div class="col-lg-9 pt-4">
+                            <span class="float-right">
+                                <button class="btn btn-info float-right" (click)="openDepartmentEntryForm();">
+                                    <i class="fa fa-plus"></i> Create
+                                </button>
+                            </span>
+                        </div> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="pt-2">
+      <div class="row">
+          <div class="col-lg-12">
+              <!-- 
+                createdAt: 1570158044000
+                employee: {employeeId: 26, createdAt: 1527800982000, emailId: "nidhinanil@alindrelays.com", empCode: "292",…}
+                isActive: 1
+                srCallAttendDate: 1568917800000
+                srCallClosedDate: 1570127400000
+                srCallStatus: "completed"
+                srId: 336
+                srNaturalOfService: "Testing and commissioning of control panel"
+                srNotificationStatus: "unviewed"
+                srRemarks: "Nil"
+                srReportedProblem: "ANPD112 (1190410) display problem (IO & display counter run)so relay hand over to office and spare relay put in service temporarily"
+                sr_cd_id: 368
+                updatedAt: 1570158047000
+               -->
+               <table class="table" [mfData]="onGoingServiceReportList" #mf="mfDataTable" [mfRowsOnPage]="15">
+                    <thead>
+                    <tr>
+                        <th>
+                            <mfDefaultSorter by="slNo">Sl No</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="createdAt">Call Register Date</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="cdAllotNo">Allot No</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="updatedAt">Allot Date</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="siteDetails">Site Details</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="employee?.firstName">Employee Name</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="cdStatus">Status</mfDefaultSorter>
+                        </th>                     
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of mf.data" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+                        <td>{{item.slNo}}</td>
+                        <td>{{item.createdAt | date :  "dd MMM yyyy" }}</td>
+                        <td>{{item.cdAllotNo | uppercase}}</td>  
+                        <td>{{item.cdAllotDate | date :  "dd MMM yyyy"}}</td>
+                        <td class="text-truncate-cell" title="{{item.siteDetails | uppercase}}">
+                            {{item.siteDetails | uppercase}}
+                        </td>   
+                        <td class="text-truncate-cell">
+                            {{item.employee?.firstName | uppercase }} {{ item.employee?.lastName | uppercase }}
+                            <span *ngIf="item.employeeList && item.employeeList.length > 0">
+                                <span *ngFor="let emp of item.employeeList;let namesIndex = index">                                
+                                    <span *ngIf="emp" title="Employee Code: {{ emp.empCode }}"> 
+                                    {{ emp.firstName | uppercase}} {{ emp.lastName | uppercase}}
+                                        <span *ngIf="item.employeeList.length > 1 && item.employeeList.length - 1 != namesIndex">, </span> 
+                                    </span>
+                                </span>
+                            </span>
+                        </td>
+                        <td>{{item.uiStatus | uppercase }}</td>
+                        <td>                            
+                            <span class="pr-3">
+                                <a class="link" *ngIf="item.cdStatus.toLowerCase() == 'on going'" 
+                                    (click)="allotCallDetails(item);"><i class="fas fa-user-plus"></i></a>
+                                <a class="link disabled-link" *ngIf="item.cdStatus.toLowerCase() != 'on going'">
+                                    <i class="fas fa-user-plus"></i></a>
+                            </span>                           
+                            <a class="link" title="Click to view"
+                                (click)="openWorkDetailsViewModal(item);"><i class="fas fa-eye"></i></a>   
+                        </td>
+                    </tr>
+                    <tr *ngIf="!onGoingServiceReportList">
+                        <td colspan="8">
+                            <div class="text-center">Loading...</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="7">
+                            <mfBootstrapPaginator [rowsOnPageSet]="[15,25,30,40,50]"></mfBootstrapPaginator>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>          
+          </div>
+      </div>
+    </div>
+    <!-- Modal Form -->
+    <div class="modal" id="workDetailsViewModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Work Details View</h5>
+                    <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeWorkDetailsViewModal();">&times;</button>
+                </div>           
+                <div class="modal-body" id="workDetailsViewPrintSection">
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Allot No<span>:</span></label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.cdAllotNo | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Allot Date</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{workDetailsViewData?.cdAllotDate | date :  "dd MMM yyyy" }}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Service Request Id</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.serviceRequestId | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Customer Name</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.cdCustomerName | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Contact No</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.cdContactNo | uppercase}}</label></div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Email</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.cdEmail | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Board/Division</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.cdBoardDivision | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Site Details</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.siteDetails | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Relay/Panel Details</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.cdRelayPanelDetails | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Product Details</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.productDetails | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Product Sl No</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.productSlNo | uppercase}}</label></div>
+                    </div>                                        
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Gurantee Period</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.cdGuranteePeriod | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Problem Details</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.cdProblemDetails | uppercase}}</label></div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Status</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.cdStatus | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Created At</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ workDetailsViewData?.createdAt | date :  "dd MMM yyyy"}}</label></div>
+                    </div>                
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-8">
+                        <button type="button" class="btn btn-primary float-right mr-3" 
+                            (click)="print()"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+                <br/>
+            </div>
+        </div>
+    </div>
+<!-- End Of Modal Form -->
+<!-- Allot Modal Form -->
+<div class="modal" id="allotModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Work Allot Changes</h5>
+                <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeAllotEntryView();">&times;</button>
+            </div>
+            <form novalidate [formGroup]="allotCallManagementForm" (ngSubmit)="onAllotCallManagementSubmitted();">
+                <div class="modal-body"> 
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <label class="view-label">Employee</label>
+                            <input type="hidden" formControlName="alId" /> 
+                                
+                            <ng-multiselect-dropdown 
+                                class="mandatory-field"
+                                name="employees"
+                                [ngClass]="{ 'is-invalid': isAllotCallManagementFormAttemptSubmit && isNotEmployeesSelected }"
+                                [placeholder]="'Select employees'"
+                                [data]="employeeList"                                
+                                formControlName="employees"
+                                [settings]="dropdownSettings"
+                                (onDeSelect)="onItemDeSelect($event)"
+                                (onSelect)="onItemSelect($event)">
+                            </ng-multiselect-dropdown>   
+                            <div *ngIf="isAllotCallManagementFormAttemptSubmit && allotCallMngtForm.employees?.errors" class="invalid-feedback">
+                                <div *ngIf="allotCallMngtForm.employees?.errors">Please select atleast one employee.</div>
+                            </div>                          
+                        </div>
+                    </div>  
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <label class="view-label">Mobile Number</label>
+                            <input formControlName="mobileNumber" class="form-control mandatory-field" type="number"
+                            [ngClass]="{ 'is-invalid': isAllotCallManagementFormAttemptSubmit && allotCallMngtForm.mobileNumber?.errors }"/>
+                            <div *ngIf="isAllotCallManagementFormAttemptSubmit && allotCallMngtForm.mobileNumber?.errors" class="invalid-feedback">
+                                <div *ngIf="allotCallMngtForm.mobileNumber?.errors">Please provide a valid mobile number.</div>
+                            </div> 
+                        </div>
+                    </div> 
+                    <div class="row form-group">
+                        <div class="col-lg-12">
+                            <div><label class="view-label">Allot Date</label></div>
+                            <!-- <label>{{ allotCallManagementForm.controls.allotDate.value | date :  "dd MMM yyyy"}}</label> -->
+                            <input formControlName="allotDate" class="form-control mandatory-field" type="date"
+                            [ngClass]="{ 'is-invalid': isAllotCallManagementFormAttemptSubmit && allotCallMngtForm.allotDate.errors }"/>
+                            <div *ngIf="isAllotCallManagementFormAttemptSubmit && allotCallMngtForm.allotDate.errors" class="invalid-feedback">
+                                <div *ngIf="allotCallMngtForm.allotDate.errors.required">Please provide the date.</div>
+                            </div> 
+                        </div>
+                    </div>  
+                </div>             
+                <div class="modal-footer">
+                    <button class="btn btn-info" type="submit">Submit</button>
+                    <button class="btn btn-danger" type="button" data-dismiss="modal" appModal (click)="closeAllotEntryView();">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

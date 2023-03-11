@@ -1,0 +1,32 @@
+.call-reg-container {
+    padding: 20px;
+    background-color: rgba(0,0,0,.50);
+    label{
+        font-weight: 600;
+        color: #ffffff;
+    }
+    h1 {
+        color: #ffffff;
+    }
+}
+
+.login-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url('assets/images/train-bg.jpg');
+    background-size: cover;
+  }
+  
+  .login-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100%;
+    background-color: rgba(0,0,0,.75);
+  }
+  

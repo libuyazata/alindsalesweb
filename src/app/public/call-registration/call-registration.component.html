@@ -1,0 +1,224 @@
+<div class="login-container bg-light">
+  <div class="login-box">
+<div >
+  <div class="text-center " >
+    
+    <!-- <p>
+      <i class="far fa-bookmark"></i> <span translate>Version</span> {{version}}
+    </p> -->
+  </div>
+</div>
+<div class="container">
+  
+  <h4 class="card-title">
+    <img src="assets/images/logo_call_reg.png" class="logo" />
+  </h4>
+
+  <div class="call-reg-container">
+    <h1 style="border-bottom: 3px solid #800;margin-bottom: 26px;">
+      <span translate>Call Registration</span>
+    </h1> 
+
+    
+    <form novalidate [formGroup]="callRegistrationForm" autocomplete="off"
+      (ngSubmit)="onCallRegistrationFormSubmitted();">
+      <div class="row form-group">
+        <div class="col-lg-6">
+            <div><label>Name</label></div>
+            <input id="typeahead-basic" type="text" formControlName="customerId" autocomplete="cr-cust-name"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.customerId.errors }"
+              class="form-control mandatory-field" [(ngModel)]="model" [ngbTypeahead]="search" maxlength="50"/>
+            <!-- <select class="form-control" formControlName="customerId"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.customerId.errors }" >      
+                  <option value="">Select</option>
+                  <option *ngFor="let customer of customerList" [ngValue]="customer?.customerId">{{customer?.customerName}}</option>
+            </select>-->
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.customerId.errors" class="invalid-feedback">
+                  <div *ngIf="callRegForm.customerId.errors.required">Please select the name</div>
+            </div> 
+        </div>
+        <div class="col-lg-6">
+            <label>Mobile No</label>
+            <input formControlName="cdContactNo" class="form-control mandatory-field" 
+              autocomplete="contact-no" type="text" pattern="\d*" maxlength="12"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.cdContactNo?.errors }"/>
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.cdContactNo?.errors" class="invalid-feedback">
+                <div *ngIf="callRegForm.cdContactNo?.errors">Please provide a valid mobile number.</div>
+            </div> 
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-lg-6">
+            <label>Email</label>
+            <input formControlName="cdEmail" class="form-control"  maxlength="100" autocomplete="cust-email"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.cdEmail?.errors }"/>
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.cdEmail?.errors" class="invalid-feedback">
+                <div *ngIf="callRegForm.cdEmail?.errors">Please provide a valid email.</div>
+            </div> 
+        </div>
+        <div class="col-lg-6">
+          <div><label>Board/Division</label></div>
+          <input id="typeahead-basic" type="text" formControlName="boardDivisionId" autocomplete="cr-board-divisions{{randomNumber}}"
+            [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.boardDivisionId.errors }"
+            class="form-control mandatory-field" [(ngModel)]="boardModel" [ngbTypeahead]="searchBoardDivsion" maxlength="50"/>
+
+          <!-- <select class="form-control" formControlName="boardDivisionId"
+            [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.boardDivisionId.errors }" >      
+                <option value="">Select</option>
+                <option *ngFor="let boardDivision of boardDivisionDetails" [ngValue]="boardDivision?.boardDivisionId">{{boardDivision?.boardDivisionName}}</option>
+          </select> -->
+          <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.boardDivisionId.errors" class="invalid-feedback">
+              <div *ngIf="callRegForm.boardDivisionId.errors.required">Please select the board/division.</div>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-lg-12">
+            <label>Site Details</label>
+            <input formControlName="siteDetails" class="form-control mandatory-field" maxlength="500"
+              [(ngModel)]="siteDetailsModel" [ngbTypeahead]="siteDetailsTypeAhead"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.siteDetails?.errors }"/>
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.siteDetails?.errors" class="invalid-feedback">
+                <div *ngIf="callRegForm.siteDetails?.errors.required">Please provide the site details.</div>
+            </div> 
+        </div>
+      </div>    
+      <div class="row form-group">
+          <div class="col-lg-2">        
+            <div><label>Product</label></div>
+            <select class="form-control mandatory-field" (change)="onTicketTypeSelected(productSelect.value)" #productSelect >      
+                <option value="Panel">Panel</option>
+                <option value="Relay">Relay</option>
+            </select>
+            <!-- Just commenting old implementation <div class="row">
+                <div class="col-lg-6 pt-3">
+                  <label><input type="radio" value="Panel" checked="checked"
+              name="panelRelayTicketType" (click)="onTicketTypeSelected($event, 'Panel');"/> Panel</label> 
+                </div>
+                <div class="col-lg-6 pt-3">
+                  <label><input type="radio" value="Relay" 
+                  name="panelRelayTicketType" (click)="onTicketTypeSelected($event, 'Relay');"/> Relay</label>
+              </div>
+            </div> -->
+          </div>
+          <div class="col-lg-10" *ngIf="showPanelControl">
+            <div><label>Product Type</label></div>
+            <input formControlName="panelId" class="form-control mandatory-field" maxlength="500"
+              [(ngModel)]="panelIdModel" [ngbTypeahead]="panelIdTypeAhead"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.panelId?.errors }"/>
+
+
+            <!-- <select class="form-control mandatory-field" formControlName="panelId"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.panelId.errors }" >      
+                  <option value="">Select</option>
+                  <option *ngFor="let panel of panelDetails" [ngValue]="panel?.panelId">{{panel?.panelName}}</option>
+            </select> -->
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.panelId.errors" class="invalid-feedback">
+                  <div *ngIf="callRegForm.panelId.errors.required">Please enter the panel</div>
+            </div>
+          </div>
+        
+          <div class="col-lg-10" *ngIf="!showPanelControl">
+              <div><label>Product Type</label></div>
+              <input formControlName="relayId" class="form-control mandatory-field" maxlength="500"
+              [(ngModel)]="relayIdModel" [ngbTypeahead]="relayIdTypeAhead"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.relayId?.errors }"/>
+
+
+              <!-- <select class="form-control mandatory-field" formControlName="relayId"
+                [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.relayId.errors }" >      
+                    <option value="">Select</option>
+                    <option *ngFor="let relay of relayDetails" [ngValue]="relay?.relayId">{{relay?.relayName}}</option>
+              </select> -->
+              <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.relayId.errors" class="invalid-feedback">
+                    <div *ngIf="callRegForm.relayId.errors.required">Please enter the relay</div>
+              </div>
+          </div> 
+        </div>
+        <div class="row form-group">
+          <div class="col-lg-6">
+              <label>Product Serial Number</label>
+              <input formControlName="productSlNo" class="form-control" maxlength="12" />
+              <!-- <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.productSlNo?.errors" class="invalid-feedback">
+                  <div *ngIf="callRegForm.productSlNo?.errors.required">Please provide the product serial number.</div>
+              </div>  -->
+          </div>
+          <div class="col-lg-4">
+            <label>Nature of Job</label>
+            <select class="form-control mandatory-field" formControlName="natureJobId"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.natureJobId.errors }" >      
+                  <option value="">Select</option>
+                  <option *ngFor="let job of natureOfJobDetails" [ngValue]="job?.natureJobId">{{job?.jobNature}}</option>
+            </select>
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.natureJobId.errors" class="invalid-feedback">
+                  <div *ngIf="callRegForm.natureJobId.errors.required">Please select the nature of job</div>
+            </div> 
+          </div>
+          <div class="col-lg-2">
+            <div><label>AMC</label></div>
+            <select class="form-control mandatory-field" formControlName="amc" (change)="onAmcSelectionChange(amcSelect.value)" #amcSelect >      
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+          </div>
+          <!-- <div class="col-lg-4">
+            <label>Product Details</label>
+            <input formControlName="productDetails" class="form-control mandatory-field" maxlength="50"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.productDetails?.errors }"/>
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.productDetails?.errors" class="invalid-feedback">
+                <div *ngIf="callRegForm.productDetails?.errors.required">Please provide the product details.</div>
+            </div> 
+          </div> -->
+      </div>
+      <!-- <div class="row form-group">
+        <div class="col-lg-12">
+            <label>Relay Panel Details</label>
+            <input formControlName="cdRelayPanelDetails" class="form-control"  maxlength="500"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.cdRelayPanelDetails?.errors }"/>
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.cdRelayPanelDetails?.errors" class="invalid-feedback">
+                <div *ngIf="callRegForm.cdRelayPanelDetails?.errors.required">Please provide the relay panel details.</div>
+            </div> 
+        </div>
+      </div>  -->   
+      <!--<div class="row form-group">
+         <div class="col-lg-6">
+            <label>Problem Details</label>
+            <input formControlName="cdProblemDetails" class="form-control mandatory-field" maxlength="50"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.cdProblemDetails?.errors }"/>
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.cdProblemDetails?.errors" class="invalid-feedback">
+                <div *ngIf="callRegForm.cdProblemDetails?.errors.required">Please provide the problem details.</div>
+            </div> 
+        </div>       
+      </div> --> 
+      <div class="row form-group" *ngIf="showAmcDetailsControl">
+        <div class="col-lg-12">
+          <div><label>AMC Details</label></div>
+          <input formControlName="amcDetails" class="form-control mandatory-field" maxlength="500"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.amcDetails?.errors }"/>
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.amcDetails?.errors" class="invalid-feedback">
+                <div *ngIf="callRegForm.amcDetails?.errors.required">Please provide the amc details.</div>
+            </div> 
+        </div> 
+      </div>
+      <div class="row form-group">
+        <div class="col-lg-12">
+            <label>Remarks</label>
+            <input formControlName="remarks" class="form-control  mandatory-field" maxlength="200"
+              [ngClass]="{ 'is-invalid': isCallRegistrationFormAttemptSubmit && callRegForm.remarks?.errors }"/>
+            <div *ngIf="isCallRegistrationFormAttemptSubmit && callRegForm.remarks?.errors" class="invalid-feedback">
+                <div *ngIf="callRegForm.remarks?.errors.required">Please provide remarks.</div>
+            </div> 
+        </div>
+      </div>        
+      <div class="row form-group" style="padding-top: 20px;">
+        <div class="col-lg-12 text-center">
+          <button class="btn btn-info" type="submit">Submit</button>
+          <button class="btn btn-danger" type="reset">Clear</button>
+        </div>
+      </div> 
+    </form>
+  </div>
+</div>
+
+</div>
+</div>

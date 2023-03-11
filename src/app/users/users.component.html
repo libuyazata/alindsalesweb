@@ -1,0 +1,114 @@
+<div class="page-header-container">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4>
+                    <span>Employee Details</span>                
+                </h4>    
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 search-container">               
+            <div class="row"> 
+                <div class="col-lg-8">
+                    <form novalidate [formGroup]="empSearchForm">
+                        <div class="row">
+                            <div class="col-lg-4">                            
+                                <div class="search-label-container"><label>Search</label></div>
+                                <input class="form-control" formControlName="searchKeyWord"/>                            
+                            </div>
+                            <div class="col-lg-3 pt-4">
+                                <span class="float-right">
+                                    <button class="btn btn-info" (click)="onEmployeeSearched();">
+                                        Search
+                                    </button> 
+                                    <button class="btn btn-danger" type="reset">
+                                        Reset
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-4 pt-4">
+                    <span class="float-right"> 
+                        <button class="btn btn-info float-right"(click)="onAddEmployeeClicked();">
+                            <i class="fa fa-plus"></i> Add Employee</button> 
+                    </span>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+<br/>
+<div class="row"> 
+  <div class="col-lg-12">  
+    <div>
+        <table class="table" [mfData]="employeeList" #mf="mfDataTable" [mfRowsOnPage]="15">
+            <thead>
+            <tr>
+                <th>
+                    <mfDefaultSorter by="slNo">Sl No</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="firstName">Name</mfDefaultSorter>
+                </th>                
+                <th>
+                    <mfDefaultSorter by="emailId">Email</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="position">Designation</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="department.departmentName">Department</mfDefaultSorter>
+                </th>
+                <th>
+                  <mfDefaultSorter by="primaryMobileNo">Mobile No.</mfDefaultSorter>
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of mf.data">
+                <td>{{item.slNo}}</td>     
+                <td>{{item.firstName | uppercase}} {{item.lastName | uppercase}}</td>                
+                <td>{{item.emailId }}</td>
+                <td>{{item.position | uppercase}}</td>
+                <td>{{item.department.departmentName | uppercase}}</td>
+                <td>{{item.primaryMobileNo | uppercase }}</td>
+                <td>
+                    <a class="link" (click)="onUserEditClicked($event, item);"><i class="far fa-edit"></i></a> 
+                    <a class="link ml-2" (click)="onUserDeleteClicked($event, item);"><i class="far fa-trash-alt"></i></a>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                  <td colspan="7">
+                      <mfBootstrapPaginator [rowsOnPageSet]="[15,25,30,40,50]"></mfBootstrapPaginator>
+                  </td>
+              </tr>
+            </tfoot>
+          </table>
+    </div>
+  </div>
+</div>
+
+<!-- Employee Modal Form -->
+<div class="modal" id="employeeModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Personal Info</h5>
+                <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeEmployeeEntryView();">&times;</button>
+            </div>
+            <div class="modal-body">
+                <save-employee [employeeData]="selectedEmployee" (employeSaveCompleted)="onEmployeeSaved();"></save-employee>
+            </div>
+        </div>
+    </div>
+</div>
+      

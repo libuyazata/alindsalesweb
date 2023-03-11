@@ -1,0 +1,313 @@
+<div class="page-header-container">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4>
+                    <span>SERVICE REPORT</span>
+                    <span class="float-right">
+                        <download-ctrl (click)="onDownloadExcelClicked();"></download-ctrl>
+                    </span> 
+                </h4>    
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 search-container">
+            <form novalidate [formGroup]="serviceReportSearchForm" (ngSubmit)="onServiceReportSearched();">
+            <div class="row">
+                <!-- <div class="col-lg-2">                    
+                    <div class="search-label-container"><label>Status</label></div>
+                    <select class="form-control" formControlName="serviceReportStatus">
+                        <option value="all">Select</option>
+                        <option value="all">All</option>
+                        <option value="completed">Completed</option>
+                        <option value="not completed">Not Completed</option>
+                    </select>
+                </div> -->
+                <div class="col-lg-2">
+                    <div class="search-label-container"><label>From</label></div>
+                    <input formControlName="dateFrom" class="form-control"  type="date"/>  
+                </div>
+                <div class="col-lg-2">
+                    <div class="search-label-container"><label>To</label></div>
+                    <input formControlName="dateTo" class="form-control" type="date" />  
+                </div>
+                <div class="col-lg-2">
+                    <div class="search-label-container"><label>Search</label></div>
+                    <input formControlName="searchKeyWord" class="form-control" />  
+                </div>                
+                <div class="col-lg-2">
+                    <div class="search-label-container"><label>Employee</label></div>
+                    <select class="form-control" formControlName="employeeId">
+                        <option value="-1">All</option>         
+                        <option *ngFor="let employee of employeeList" [ngValue]="employee.employeeId">{{employee.fullName}}</option>
+                    </select> 
+                </div>
+                <div class="col-lg-1">
+                    <div class="search-label-container"><label>Guarantee </label></div>
+                    <select class="form-control" formControlName="gurenteePeriod">
+                        <!-- <option value="all">Select</option> -->
+                        <option value="all">All</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select> 
+                </div>
+                <div class="col-lg-1">
+                    <div class="search-label-container"><label>Call Status</label></div>
+                    <select class="form-control" formControlName="statusId">   
+                        <option value="-1">All</option> <!-- Only Completed and Pending is needed here, id's are mapped as per status -->                
+                        <option value="2">Completed</option>
+                        <option value="4">Not Completed</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 pt-4">                    
+                    <span class="float-right">
+                        <button class="btn btn-info" type="submit">Search</button>  
+                        <button class="btn btn-danger" type="reset">Reset</button>
+                    </span>
+                </div>
+                <!--<div class="col-lg-9 pt-4">
+                    <span class="float-right">
+                        <button class="btn btn-info float-right" (click)="openDepartmentEntryForm();">
+                            <i class="fa fa-plus"></i> Create
+                        </button>
+                    </span>
+                </div> -->
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+<div class="pt-2">
+  <div class="row">
+      <div class="col-lg-12">
+          <!-- 
+            createdAt: 1570158044000
+            employee: {employeeId: 26, createdAt: 1527800982000, emailId: "nidhinanil@alindrelays.com", empCode: "292",…}
+            isActive: 1
+            srCallAttendDate: 1568917800000
+            srCallClosedDate: 1570127400000
+            srCallStatus: "completed"
+            srId: 336
+            srNaturalOfService: "Testing and commissioning of control panel"
+            srNotificationStatus: "unviewed"
+            srRemarks: "Nil"
+            srReportedProblem: "ANPD112 (1190410) display problem (IO & display counter run)so relay hand over to office and spare relay put in service temporarily"
+            sr_cd_id: 368
+            updatedAt: 1570158047000
+           -->
+           <table class="table" [mfData]="serviceReportList" #mf="mfDataTable" [mfRowsOnPage]="15">
+                <thead>
+                <tr>
+                     <th>
+                        <mfDefaultSorter by="slNo">Sl No</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="createdAt">Call Register Date</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="alAllotNo">Allot No</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="callDetail.cdAllotDate">Allot Date</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="srCallAttendDate">Call Attend Date</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="callDetail.serviceRequestId">Service Request Id</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="callDetail.siteDetails">Site Details</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="employee.firstName">Employee Name</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="srCallStatus">Status</mfDefaultSorter>
+                    </th>                     
+                    <th>
+                        Action
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of mf.data" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+                    <td>{{item.slNo }}</td>
+                    <td>{{item.createdAt | date :  "dd MMM yyyy" }}</td>
+                    <td>{{item.alAllotNo | uppercase}}</td>  
+                    <td>{{item.callDetail.cdAllotDate | date :  "dd MMM yyyy"}}</td>  
+                    <td>{{item.srCallAttendDate | date :  "dd MMM yyyy" }}</td>
+                    <td>{{item.callDetail.serviceRequestId | uppercase }}</td>
+                    <td class="text-truncate-cell" title="{{item.callDetail.siteDetails | uppercase}}">
+                        {{item.callDetail.siteDetails | uppercase}}
+                    </td>   
+                    <td title="Employee Code: {{item.employee.empCode}}">{{item.employee.fullName | uppercase }}</td>
+                    <td>{{item.srCallStatus | uppercase }}</td>
+                    <td>
+                        <a class="link mr-2" *ngIf="item?.reviewStatus == 1"
+                            (click)="editServiceReport(item);"><i class="far fa-edit"></i></a>
+                            
+                        <a class="link disabled-link mr-2" *ngIf="item?.reviewStatus == 0"><i class="far fa-edit"></i></a>
+                        <a class="link" (click)="openServiceReportViewModal(item);"><i class="fas fa-eye"></i></a>
+                    </td>
+                </tr>
+                <tr *ngIf="!serviceReportList">
+                    <td colspan="10">
+                        <div class="text-center">Loading...</div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="7">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[15,20,30,40,50]"></mfBootstrapPaginator>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>          
+      </div>
+  </div>
+</div>
+<!-- Modal Form -->
+<div class="modal" id="serviceReportViewModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">MoM View</h5>
+                    <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeServiceReportViewModal();">&times;</button>
+                </div>           
+                <div class="modal-body" id="serviceReportPrintSection">
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Employee Name<span>:</span></label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.employee.firstName | uppercase}} {{ serviceReportViewData?.employee.lastName | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Call Attend Date</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{serviceReportViewData?.srCallAttendDate | date :  "dd MMM yyyy" }}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Call Close Date</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.srCallClosedDate | date :  "dd MMM yyyy" }}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Customer Details</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">
+                            <label>{{ serviceReportViewData?.callDetail.cdCustomerName | uppercase}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Contact No</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{  serviceReportViewData?.callDetail.cdContactNo | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Allot No</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.cdAllotNo | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Service Request Id</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.serviceRequestId | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Site Details</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.siteDetails | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Serial No</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.productSlNo | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Gurantee Period</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.cdGuranteePeriod | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Relay/Panel Details</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.cdRelayPanelDetails | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Nature of Job</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.natureOfJobs.jobNature | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Reported Problems</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.cdProblemDetails | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Actions Undertaken</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.srNaturalOfService | natureofjobfilter}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Call Status</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.srCallStatus | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Remarks</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.srRemarks | uppercase}}</label></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Minutes Of Meeting</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><label><a target="_blank" href="{{basePath}}{{serviceReportViewData?.filePath}}">{{ serviceReportViewData?.orginalFileName | uppercase}}</a></label></div>
+                    </div>                
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-8">
+                        <download-ctrl id="report-download-control" style="visibility:hidden;" (click)="onDownloadPdfClicked(serviceReportViewData?.alId);"></download-ctrl>
+                        <button type="button" class="btn btn-primary float-right mr-3" 
+                            (click)="print($event)"><i class="fas fa-print"></i> Download</button>
+                        <!-- <button type="button" class="btn btn-primary float-right mr-3" 
+                            (click)="print()"><i class="fas fa-print"></i> Print</button> -->
+                    </div>
+                </div>
+                <br/>
+            </div>
+        </div>
+    </div>
+<!-- End Of Modal Form -->
+
+<!-- Service Report Modal Form -->
+<div class="modal" id="serviceReportSubmitModal">
+        <div class="modal-dialog">
+            <form novalidate [formGroup]="serviceReportSubmitForm" (ngSubmit)="onServiceReportSubmitted();">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Service Report</h5>
+                        <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeServiceReportSubmitView();">&times;</button>
+                    </div>           
+                    <div class="modal-body">
+                        <div class="row">                            
+                            <div class="col-lg-12">
+                                <div><label class="view-label">Serial Number : </label> {{ serviceReportSubmitForm.controls.slNo.value }}</div>
+                            </div>
+                        </div>
+                        <div class="row form-group">                            
+                            <div class="col-lg-12">
+                                <div><label class="view-label">Gurantee Period</label></div>
+                                <input type="hidden" formControlName="srId" />
+                                <select class="form-control mandatory-field" formControlName="gurenteePeriod"
+                                    [ngClass]="{ 'is-invalid': isServiceReportSubmitFormSubmit && serviceReportSaveForm.gurenteePeriod.errors }" >      
+                                    <option value="">Select</option>          
+                                    <option value="yes">Yes</option> 
+                                    <option value="no">No</option>
+                                </select>
+                                <div *ngIf="isServiceReportSubmitFormSubmit && serviceReportSaveForm.gurenteePeriod.errors" class="invalid-feedback">
+                                    <div *ngIf="serviceReportSaveForm.gurenteePeriod.errors.required">Please select the gurantee period.</div>
+                                </div>  
+                            </div>
+                        </div>  
+                        <br/>                  
+                        <div class="row form-group">
+                            <div class="col-lg-12">
+                                <span class="float-right">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="reset" class="btn btn-danger">Reset</button>
+                                </span>
+                            </div>
+                        </div>                
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+<!-- End Of Service Report Submit Modal Form -->

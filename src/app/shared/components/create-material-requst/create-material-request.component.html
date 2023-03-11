@@ -1,0 +1,238 @@
+<form novalidate [formGroup]="addMaterialRequestForm" (ngSubmit)="onMaterialRequestCreate();">
+  <div class="matreq-form-body">        
+    <div class="row form-group">
+        <div *ngIf="!isFormView" class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div><label>Allotment # :</label> <span *ngIf="isFormView"  class="details-main-data">{{materialRequestData.callDetail.cdAllotNo}}</span></div>
+                    <ngx-select-dropdown (change)="onAllottedWorkSelectionChanged($event)"
+                    formControlName="allotedwork" [multiple]="false"
+                    [config]="allottedListConfig" [options]="allottedWorksList" appendTo="body" 
+                    [ngClass]="{ 'is-invalid': isMaterialRequestSubmitAttempted && materialRequestForm.allotedwork.errors }"></ngx-select-dropdown>
+
+                    <div *ngIf="isMaterialRequestSubmitAttempted && materialRequestForm.allotedwork.errors" style="color:red;">
+                        <div *ngIf="materialRequestForm.allotedwork.errors.required">Please select a work allotment number.</div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div><label>Due Date : </label></div>
+                    <my-date-picker *ngIf=" ! isFormView" name="dueDate" [options]="datePickerConfig" class="form-control" formControlName="dueDate" >
+                    </my-date-picker>    
+                </div>
+                
+                <div class="col-lg-6">
+                    <div><label>Service Request ID : </label></div>
+                    <input *ngIf=" ! isFormView" class="form-control" [(ngModel)]="callDetails.callDetail.serviceRequestId" type="text" [ngModelOptions]="{standalone: true}" disabled/>
+                </div>
+                <div class="col-lg-6">
+                    <div><label>Board/Division : </label> <span *ngIf="isFormView"  class="details-main-data">{{materialRequestData.callDetail.cdBoardDivision}}</span></div>
+                    <input *ngIf=" ! isFormView" class="form-control" [(ngModel)]="callDetails.callDetail.cdBoardDivision" type="text" [ngModelOptions]="{standalone: true}" disabled/>
+                </div>
+
+                <div class="col-lg-6">
+                    <div><label>Customer Name : </label></div>
+                    <input *ngIf=" ! isFormView" class="form-control" [(ngModel)]="callDetails.callDetail.cdCustomerName" type="text" [ngModelOptions]="{standalone: true}" disabled/>
+                </div>
+                <div class="col-lg-6">
+                    <div><label>Site Details : </label></div>
+                    <input *ngIf=" ! isFormView" class="form-control" [(ngModel)]="callDetails.callDetail.siteDetails" type="text" [ngModelOptions]="{standalone: true}" disabled/>
+                </div>
+                <div class="col-lg-12">
+                    <div><label>Name : </label></div>
+                    <input *ngIf=" ! isFormView" class="form-control" formControlName="name" type="text"
+                    [ngClass]="{ 'is-invalid': isMaterialRequestSubmitAttempted && materialRequestForm.name.errors }"/>
+                    <div *ngIf="isMaterialRequestSubmitAttempted && materialRequestForm.name.errors" style="color:red;">Please enter a name.</div>
+                </div>
+                <div class="col-lg-12">
+                    <div><label>Address : </label></div>
+                    <textarea *ngIf=" ! isFormView" formControlName="address" class="form-control" type="text" maxlength="400"
+                    [ngClass]="{ 'is-invalid': isMaterialRequestSubmitAttempted && materialRequestForm.address.errors }"></textarea>
+                    <div *ngIf="isMaterialRequestSubmitAttempted && materialRequestForm.address.errors" style="color:red;">Please enter address.</div>
+                </div>
+                <div class="col-lg-5">
+                    <div><label>State : </label></div>
+                    <input *ngIf=" ! isFormView" class="form-control" formControlName="state" type="text"
+                    [ngClass]="{ 'is-invalid': isMaterialRequestSubmitAttempted && materialRequestForm.state.errors }"/>
+                    <div *ngIf="isMaterialRequestSubmitAttempted && materialRequestForm.address.errors" style="color:red;">Please enter state.</div>
+                </div>
+                <div class="col-lg-3">
+                    <div><label>Country : </label></div>
+                    <input *ngIf=" ! isFormView" class="form-control" formControlName="country" type="text"
+                    [ngClass]="{ 'is-invalid': isMaterialRequestSubmitAttempted && materialRequestForm.country.errors }"/>
+                    <div *ngIf="isMaterialRequestSubmitAttempted && materialRequestForm.address.errors" style="color:red;">Please enter country.</div>
+                </div>
+                <div class="col-lg-4">
+                    <div><label>Pincode : </label></div>
+                    <input *ngIf=" ! isFormView" class="form-control" formControlName="pincode" type="number"
+                    [ngClass]="{ 'is-invalid': isMaterialRequestSubmitAttempted && materialRequestForm.pincode.errors }"/>
+                    <div *ngIf="isMaterialRequestSubmitAttempted && materialRequestForm.address.errors" style="color:red;">Please enter pincode.</div>
+                </div>
+                <div class="col-lg-6">
+                    <div><label>Phone Number : </label></div>
+                    <input *ngIf=" ! isFormView" class="form-control" formControlName="phoneNumber1" type="number"
+                    [ngClass]="{ 'is-invalid': isMaterialRequestSubmitAttempted && materialRequestForm.phoneNumber1.errors }"/>
+                    <div *ngIf="isMaterialRequestSubmitAttempted && materialRequestForm.address.errors" style="color:red;">Please enter phone number.</div>
+                </div>
+                <div class="col-lg-6">
+                    <div><label>Alternate Phone Number : </label></div>
+                    <input *ngIf=" ! isFormView" class="form-control" formControlName="phoneNumber2" type="number"/>
+                </div>
+                <div class="col-lg-12">
+                    <div><label>Remarks : </label></div>
+                    <textarea *ngIf=" ! isFormView" formControlName="remarks" class="form-control" type="text" maxlength="400"></textarea>
+                </div>
+            </div>
+
+            <div class="row form-group" style="margin-top: 20px;" *ngIf=" ! isFormView">
+                <div class="col-lg-12">
+                    <button class="btn btn-primary" type="submit">Save</button>
+                    <button class="btn btn-danger" (click)="resetForm()" type="reset">Clear</button>     
+                </div>   
+                
+            </div>
+        </div>
+
+        <div *ngIf="isFormView" class="col-lg-12 col-md-12 col-sm-12">
+            <table class="form-data-view-table">
+                <tbody>
+                    <tr>
+                        <th>MR #</th>
+                        <td colspan="3">{{materialRequestData.metrialRequestNumber}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Due Date</th>
+                        <td>{{materialRequestData.dueDate | date :  "dd MMM yyyy" }}</td>
+                        <th>Status</th>
+                        <td>{{materialRequestData.statusInfo.status}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Created By</th>
+                        <td>{{materialRequestData.employeeMinData.fullName}}</td>
+                        <th>Created On</th>
+                        <td>{{materialRequestData.updatedAt |  date :  "dd MMM yyyy"}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>SR #</th>
+                        <td>{{materialRequestData.callDetail.serviceRequestId}}</td>
+                        <th>Board / Division</th>
+                        <td class="wrap">{{materialRequestData.callDetail.cdBoardDivision}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Customer</th>
+                        <td class="wrap">{{materialRequestData.callDetail.cdCustomerName}}</td>
+                        <th>Site Details</th>
+                        <td class="wrap">{{materialRequestData.callDetail.siteDetails}}</td>
+                    </tr>
+                    
+                    <tr>
+                        <th>Name</th>
+                        <td colspan="3">{{materialRequestData.name}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Address</th>
+                        <td colspan="3">{{materialRequestData.address}}</td>
+                    </tr>
+                    
+                    <tr>
+                        <th>State</th>
+                        <td class="wrap">{{materialRequestData.state}}</td>
+                        <th>Country</th>
+                        <td>{{materialRequestData.country}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Pincode</th>
+                        <td>{{materialRequestData.pincode}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Phone #</th>
+                        <td>{{materialRequestData.phoneNumber1}}</td>
+                        <th>Aleternate Phone # </th>
+                        <td>{{materialRequestData.phoneNumber2}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Remarks</th>
+                        <td colspan="3">{{materialRequestData.remarks}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+        <!-- 
+            <div class="col-lg-6"  *ngIf="isFormView">
+                    <div><label>Created By : </label> <span *ngIf="isFormView"  class="details-main-data">{{materialRequestData.employeeMinData.fullName}}</span></div>
+                </div>
+                <div class="col-lg-6"  *ngIf="isFormView">
+                    <div><label>Created On : </label> <span *ngIf="isFormView"  class="details-main-data"></span></div>
+                </div>
+         -->
+        <div [ngClass]="{ 'col-lg-6' : !isFormView, 'col-lg-12': isFormView }" class="col-md-12 col-sm-12" style="padding-top: 25px;">
+            <!-- For list of items to be selected -->
+            <div class="col-lg-12" *ngIf="isFormNotValid" style="color: red">
+                Please fill all items and quantities in the table
+            </div>
+            <div class="table100">
+                <div class="al-table-heading">Requested Items</div>
+                <table formArrayName="requestedItemList" style="width:100%;overflow-y: visible !important;">
+                    <thead>
+                        <tr class="table100-head">
+                            <th *ngIf=" ! isFormView"><a (click)=addMaterialRequestItem()><i class="fas fa-plus-circle" ></i></a></th>
+                            <th>Category</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="isFormView" >
+                        <tr  *ngFor="let stockItem of materialRequestData.requestedItems" >
+                            <td style="width: 35%;"> <span>{{stockItem.materialStockInfo.materialCategory.materialCategory}}</span></td>
+                            <td style="width: 35%;"> <span>{{stockItem.materialStockInfo.materialType}}</span></td>
+                            <td style="width: 10%;"><span>{{stockItem.requestedQuantity}}</span></td>
+                            <td style="width: 20%;"><span>{{stockItem.remarks}}</span></td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf=" ! isFormView" class="form-group" >
+                        <tr *ngFor="let stockItem of getRequestedItemCotnrols(); index as i" [formGroupName]="i"
+                        [ngClass]="{ 'is-invalid-row' : isMaterialRequestSubmitAttempted 
+                            && (requestedItemControlsOfIndex(i).controls.materialStockId.errors || requestedItemControlsOfIndex(i).controls.requestedQuantity.errors)}">
+                            <td style="width: 10%;">
+                                <a (click)="removeMaterialRequestItem(i)"><i class="fas fa-trash" ></i></a>
+                            </td>
+                            <td style="width: 30%;">
+                                <ngx-select-dropdown 
+                                    formControlName="materialCategory" [multiple]="false" 
+                                    (change)="onStockCategoryChange(i)"
+                                    [config]="stockCategorySelectConfig" [options]="categoryList" appendTo="body" >
+                                </ngx-select-dropdown>
+                            </td>
+                            <td style="width: 30%;">
+                                <ngx-select-dropdown 
+                                    formControlName="materialStockId" [multiple]="false" 
+                                    (change)="onStockItemChange(i)"
+                                    [config]="stockListSelectConfig" [options]="getMaterialStockList(i)" appendTo="body" >
+                                </ngx-select-dropdown>
+                            </td>
+                            <td style="width: 10%;">
+                                <input formControlName="requestedQuantity" class="form-control mandatory-field" type="number" />
+                            </td>
+                            <td style="width: 20%;">
+                                <input formControlName="remarks" class="form-control" type="text"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                    
+                </table>
+            </div>
+        </div>
+    </div>  
+</div>
+</form>

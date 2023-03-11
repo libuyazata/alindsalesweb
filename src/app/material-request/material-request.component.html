@@ -1,0 +1,249 @@
+<div class="page-header-container">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4>
+                    <span>MATERIAL REQUEST</span>                
+                </h4>    
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 search-container">
+            <form novalidate [formGroup]="materialRequestSearchForm" (ngSubmit)="onMaterialRequestSearched();">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="search-label-container"><label>From</label></div>
+                        <input formControlName="dateFrom" class="form-control"  type="date"/>  
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="search-label-container"><label>To</label></div>
+                        <input formControlName="dateTo" class="form-control" type="date" />  
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="search-label-container"><label>Search</label></div>
+                        <input formControlName="searchKeyWord" class="form-control" />  
+                    </div>   
+                    <div class="col-lg-3 pt-4">                    
+                        <span class="float-left">
+                            <button class="btn btn-info" type="submit">Search</button>  
+                            <button class="btn btn-danger" type="reset">Reset</button>
+                        </span>
+                    </div> 
+                    <div class="col-lg-3 pt-4" *ngIf="!isAdminUser">                    
+                        <span class="float-right">
+                            <button (click)="openMaterialRequestCreateView()" class="btn btn-info">Create Material Request</button>  
+                        </span>
+                    </div>  
+                    <div class="col-lg-3 pt-4" *ngIf="isAdminUser">                    
+                        <span class="float-right">
+                            <button (click)="openCreateDespatchView()" class="btn btn-info">Despatch Materials</button>  
+                        </span>
+                    </div>                  
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="page-body-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="table100">
+                <table [mfData]="materialRequestList" #mf="mfDataTable" [mfRowsOnPage]="15" id="mrtable">
+                    <thead>
+                        <tr class="table100-head">
+                            <th class="column1"></th>
+                            <th class="column2"><mfDefaultSorter by="metrialRequestNumber">Material Reqeust #</mfDefaultSorter></th>
+                            <th class="column2"><mfDefaultSorter by="callDetail.cdAllotNo">Allot #</mfDefaultSorter></th>
+                            <th class="column3"><mfDefaultSorter by="updatedAt">Created Date</mfDefaultSorter></th>
+                            <th class="column3"><mfDefaultSorter by="callDetail.cdCustomerName">Customer Name</mfDefaultSorter></th>
+                            <th class="column4"><mfDefaultSorter by="callDetail.siteDetails">Site Details</mfDefaultSorter></th>
+                            <th class="column5"><mfDefaultSorter by="dueDat">Due Date</mfDefaultSorter></th>
+                            <th class="column6"><mfDefaultSorter by="employeeMinData.fullName">Created By</mfDefaultSorter></th>
+                            <th class="column7"><mfDefaultSorter by="statusInfo.status">Status</mfDefaultSorter></th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let item of mf.data;index as i">
+                        <tr class="hover-action-row"> 
+                            <td class="column1"><a title="Open Material Request" class="link" (click)="openServiceRequest(item);">
+                                <i class="fas " [ngClass]="{'fa-plus-circle': !item.isDetailsSetVisible,'fa-minus-circle': item.isDetailsSetVisible }"></i></a>
+                            </td>
+                            <td class="column3">{{item.metrialRequestNumber }}</td>
+                            <td class="column3">{{item.callDetail.cdAllotNo }}</td>
+                            <td class="column2">{{item.updatedAt | date :  "dd MMM yyyy" }}</td>
+                            <td class="column3">{{(item.callDetail.cdCustomerName.length>15)? (item.callDetail.cdCustomerName | slice:0:15)+'..':(item.callDetail.cdCustomerName)}}</td>
+                            <td class="column4">{{(item.callDetail.siteDetails.length>15)? (item.callDetail.siteDetails | slice:0:15)+'..':(item.callDetail.siteDetails) }}</td>
+                            <td class="column5">{{item.dueDate  | date :  "dd MMM yyyy" }}</td>
+                            <td class="column6">{{item.employeeMinData.fullName}}</td>
+                            <td class="column7">{{item.statusInfo.status }}</td>
+                            <td class="actions">
+                                <div class="link-holder">
+                                    <a class="link" title="Delete Material Request" *ngIf=" ! isAdminUser && item.statusInfoId == 1"  (click)="deleteMaterialRequest(item);" ><i class="fas fa-trash"></i></a>
+                                    <a class="link" title="Supsend Material Request" *ngIf="isAdminUser"  (click)="suspendMaterialRequest(item);" ><i class="fas fa-times-circle"></i></a>
+                                    <a class="link" title="View Material Request" (click)="openMaterialRequestViewModal(item);"><i class="fas fa-eye"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="item.isDetailsSetVisible">
+                           <td colspan="9" style="padding: 20px;">
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                  <ngb-tabset class="tabset1" #tabs>
+                                    <ngb-tab tabindex="0">
+                                        <ng-template ngbTabTitle><span class="title1">Item Details</span></ng-template>
+                                        <ng-template ngbTabContent>
+                                            <table class="table" id="itemsTable">
+                                                <thead>
+                                                    <tr> 
+                                                        <th class="mat-table-header">Category</th>
+                                                        <th class="mat-table-header">Item Name</th>
+                                                        <th class="mat-table-header">Quantity</th>
+                                                        <th class="mat-table-header">Total Shipped</th>
+                                                        <th class="mat-table-header">Remaining Items to Ship</th>
+                                                        <th class="mat-table-header">Remarks</th>   
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let materialItem of item.requestedItems">
+                                                        <td class="mat-table-row">{{materialItem.materialStockInfo.materialCategory.materialCategory }}</td>
+                                                        <td class="mat-table-row">{{materialItem.materialStockInfo.materialType }}</td>
+                                                        <td class="mat-table-row">{{materialItem.requestedQuantity }}</td>
+                                                        <td class="mat-table-row">{{materialItem.requestedQuantity - materialItem.balanceItemToSend }}</td>
+                                                        <td class="mat-table-row">{{materialItem.balanceItemToSend }}</td>
+                                                        <td class="mat-table-row">{{materialItem.remarks}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    <ngb-tab tabindex="1">
+                                        <ng-template ngbTabTitle><span class="title1">Despatch Details</span></ng-template>
+                                        <ng-template ngbTabContent>
+                                            <div class="row" *ngIf="isAdminUser">
+                                                <div class="col-lg-12" style="padding-top: 12px;padding-bottom: 12px;padding-left: 25px;">
+                                                    <button (click)="openCreateDespatchViewForMaterialRequest(item)" class="btn btn-info">Despatch Materials</button>  
+                                                </div>
+                                            </div>
+                                            <table class="table" id="despatchTable">
+                                                <thead>
+                                                    <tr> 
+                                                        <th class="mat-table-header">Despatch #</th>
+                                                        <th class="mat-table-header">Despatched On</th>
+                                                        <th class="mat-table-header">Created By</th>
+                                                        <th class="mat-table-header">Courier Name</th>   
+                                                        <th class="mat-table-header">Tracking ID</th>   
+                                                        <th class="mat-table-header">Status</th>   
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="hover-action-row" *ngFor="let despatchItem of item.despatchDetails; index as j">
+                                                        <td class="mat-table-row">{{despatchItem.despatchNumber }}</td>
+                                                        <td class="mat-table-row">{{despatchItem.createdAt  | date :  "dd MMM yyyy" }}</td>
+                                                        <td class="mat-table-row">{{despatchItem.employeeMinData.fullName}}</td>
+                                                        <td class="mat-table-row">{{despatchItem.courierServiceDetails.courierCompanyName}}</td>
+                                                        <td class="mat-table-row">{{despatchItem.trackingId}}</td>
+                                                        <td class="mat-table-row">{{despatchItem.statusInfo.status}}</td>
+                                                        <td class="actions">
+                                                            <div class="link-holder">
+                                                                <a class="link" *ngIf=" ! isAdminUser && despatchItem.statusInfoId == 2" title="Mark Despatch Received" (click)="openDespatchReceived(item.despatchDetailsId);"><i class="fas fa-check"></i></a>
+                                                                <a class="link" title="View Despatch" (click)="opnDespatchViewModal(item.metrialRequestNumber, despatchItem);"><i class="fas fa-eye"></i></a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr *ngIf="item.despatchDetails.length == 0">
+                                                        <td colspan="6"><div class="text-center">No Data Found</div></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </ng-template>
+                                    </ngb-tab>
+                                  </ngb-tabset>      
+                                </div>
+                              </div>
+                           </td> 
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr *ngIf="materialRequestList && materialRequestList.length == 0">
+                            <td colspan="9">
+                                <div class="text-center">No Data Found</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">
+                                <mfBootstrapPaginator [rowsOnPageSet]="[15,20,30,40,50]"></mfBootstrapPaginator>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Material Request View/Created Form [BEGIN]-->
+<div class="modal" [ngClass]="{ 'd-block' : isMaterialRequestFormVisible}" id="materialRequestCreateModal" *ngIf="isMaterialRequestFormVisible">
+    <div [ngClass]="{'modal-dialog-xxl' : !isMaterialRequestView, 'modal-dialog modal-lg' : isMaterialRequestView}">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{isMaterialRequestView ? 'View Material Request' : 'Create Material Request'}}</h5>
+                <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeMaterialRequestCreate();">&times;</button>
+            </div>
+            <div class="modal-body">
+                <create-material-request [materialRequestData]="materialRequestDataToView" (materialRequestSaved)="onMaterialRequestSaved();"></create-material-request>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Material Request View/Created Form [END]-->
+
+
+<!-- Material Request Despatch View/Created Form [BEGIN]-->
+<div class="modal" [ngClass]="{ 'd-block' : isDespatchFormVisible}" id="materialRequestDespatchCreateModal" *ngIf="isDespatchFormVisible">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{isDespatchView ? 'View Despatch Details' : 'Create Despatch'}}</h5>
+                <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeDespatchCreate();">&times;</button>
+            </div>
+            <div class="modal-body" style="height: 660px;max-height: 660px;">
+                <create-material-request-despatch [despatchMaterialRequest]="despatchMaterialRequest"
+                 [materialRequestDespatchData]="materialRequestDesptachDataToView" 
+                 (materialRequestDespatchSaved)="onMaterialRequestDespatchSaved()"></create-material-request-despatch>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Material Request Despatch View/Created Form [END]-->
+
+
+<!-- Despatch Status Update Form [BEGIN]-->
+<div class="modal" [ngClass]="{ 'd-block' : isDespatchStatusUpdateFormVisible}" id="createUpdateModal" *ngIf="isDespatchStatusUpdateFormVisible">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Material Receive Status</h5>
+                <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeDespatchStatusPopup();">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form novalidate [formGroup]="despatchItemReceivedForm" (ngSubmit)="onConfirmDespatchItem();">
+
+                    <div class="col-lg-12">
+                        <div><label>Remarks : </label></div>
+                        <textarea class="form-control mandatory-field" formControlName="remarks"  type="text" maxlength="400"
+                        [ngClass]="{ 'is-invalid': isDespatchStatusUpdateFormSubmitted && despatchStatusForm.remarks.errors }"></textarea>
+
+                        <div *ngIf="isDespatchStatusUpdateFormSubmitted && despatchStatusForm.remarks.errors" style="color:red;">Please enter a remark.</div>
+                    </div>
+
+                    <div class="col-lg-12 form-group" style="margin-top: 20px;">
+                        <button class="btn btn-primary" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Create/Update Form [END]-->

@@ -1,0 +1,238 @@
+<!-- <div class="page-header">
+    <h3><span>Dashboard</span></h3>    
+</div> -->
+<section class="dashboard">
+  <div class="row">
+      <div class="col-sm-12">
+        <div class="row">
+            <!-- <div class="col-sm-2 p-2">
+                <div class="panel mini-box bg-info">
+                    <span class="btn-icon btn-icon-round btn-icon-lg-alt">
+                        <span class="fas fa-user-tie"></span>
+                    </span>
+                    <div class="box-info float-right">
+                        <p class="size-h2 float-right">40<span class="size-h4"></span></p>
+                        <p><span class="float-right">Employees</span></p>
+                    </div>
+                </div>
+            </div> -->            
+          <div class="col-sm-3 p-2" >
+            <!-- <span class="badge alert-icon blue" *ngIf="dashboardData?.newCallViewStatus > 0"><i class="far fa-bell"></i></span> -->
+            <div class="" [ngClass]="{'animating-border-box' : dashboardData?.newCallViewStatus > 0}">
+                <a class="link" [routerLink]="['/call-management/']" [queryParams]="{ 'cs': 3}">              
+                <div class="panel mini-box bg-info tile1">                  
+                    <span class="btn-icon btn-icon-round btn-icon-lg-alt">
+                        <span class="fas fa-phone-volume"></span>
+                    </span>
+                    <div class="box-info float-right">
+                        <p class="size-h2 float-right">{{dashboardData?.noOfNonAllotedCalls}}<span class="size-h4"></span></p>
+                        <p><span class="title-text float-right">New</span></p>
+                    </div>
+                </div>
+                </a>
+            </div>
+          </div>
+          <div class="col-sm-3 p-2" >
+            <!-- <span class="badge alert-icon yellow" *ngIf="dashboardData?.onGoingCallViewStatus > 0"><i class="far fa-bell"></i></span> -->
+            <div [ngClass]="{'animating-border-box' : dashboardData?.onGoingCallViewStatus > 0}">
+                <a class="link" [routerLink]="['/work-details/']">
+                <div class="panel mini-box yellow-tile">
+                    <span class="btn-icon btn-icon-round btn-icon-lg-alt">
+                        <span class="fas fa-tasks"></span>
+                    </span>
+                    <div class="box-info float-right">
+                        <p class="size-h2 float-right">{{dashboardData?.noOfOngoingCalls}} <span class="size-h4"></span></p>
+                        <p><span class="title-text float-right">In Progress</span></p>
+                    </div>
+                </div>
+                </a>
+            </div>
+          </div>
+          <div class="col-sm-3 p-2" >
+            <!-- <span class="badge alert-icon green" *ngIf="dashboardData?.completedCallViewStatus > 0"><i class="far fa-bell"></i></span> -->
+            <div [ngClass]="{'animating-border-box' : dashboardData?.completedCallViewStatus > 0}">
+                <a class="link" [routerLink]="['/call-management/']" [queryParams]="{ 'cs': 2}">
+                <div class="panel mini-box green-tile">
+                    <span class="btn-icon btn-icon-round btn-icon-lg-alt ">
+                        <span class="fas fa-check"></span>
+                    </span>
+                    <div class="box-info float-right">
+                        <p class="size-h2 float-right">{{dashboardData?.noOfCompletedCalls}}<span class="size-h4"></span></p>
+                        <p><span class="title-text float-right">Completed</span></p>
+                    </div>
+                </div>
+                </a>
+            </div>
+          </div>
+          <div class="col-sm-3 p-2">
+            <!-- <span class="badge alert-icon red" *ngIf="dashboardData?.pendingCallViewStatus > 0"><i class="far fa-bell"></i></span> -->
+            <div  [ngClass]="{'animating-border-box' : dashboardData?.pendingCallViewStatus > 0}">
+                <a class="link" [routerLink]="['/call-management/']" [queryParams]="{ 'cs': 4}">
+                    <div class="panel mini-box red-tile">
+                        <span class="btn-icon btn-icon-round btn-icon-lg-alt">
+                            <span class="fas fa-exclamation-triangle"></span>
+                        </span>
+                        <div class="box-info float-right">
+                            <p class="size-h2 float-right">{{dashboardData?.noPendingCalls}}<span class="size-h4"></span></p>
+                            <p><span class="title-text float-right">Not Completed</span></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+          </div>          
+          <!-- <div class="col-sm-3 p-2">
+            <div class="panel mini-box bg-warning">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <span class="btn-icon btn-icon-round btn-icon-lg-alt ">
+                            <span class="fas fa-users"></span>
+                        </span>
+                    </div>
+                    <div class="col-lg-10">
+                        <div class="box-info float-right" style="position:relative;right:-15px;">
+                            <p class="float-right">On going Calls {{dashboardData?.noOfOngoingCalls}}</p>
+                            <p class="float-right">Calls Completed {{dashboardData?.noOfCompletedCalls}}</p>
+                            <p class="float-right">Non Alloted Calls {{dashboardData?.noOfNonAllotedCalls}}</p>                    
+                            <p><span class="float-right">Call Management</span></p>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+          </div> -->
+        </div>
+    </div>
+    <!-- <div class="col-sm-3 p-2">
+        <div class="panel holiday-box">
+          <div class="row">
+            <div class="col-sm-4 p-2 text-center">
+                <span class="size-h2">25</span><br/>
+                <span>Dec</span><br/>
+                <span>Wed, 2019</span>
+            </div>
+            <div class="col-sm-1">
+              <div class="holiday-line-separator"></div>
+            </div>
+            <div class="col-sm-6 p-2 text-center"><br/>
+                <span class="size-h2">Christmas</span>           
+            </div>
+          </div>
+        </div>
+    </div> -->
+  </div>
+  <!-- End Of first row -->
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="row">
+        <div class="col-sm-6 p-2">
+            <div class="panel leave-box pt-2">
+                <div>
+                    <h4 style="margin-left: -15px;">New <!--<span class="far fa-edit float-right"></span> --></h4> 
+                </div>
+                <div class="row leave-row-header"> 
+                    <div class="col-sm-2 col-2 text-truncate"><b>Date</b></div>
+                    <div class="col-sm-3 col-3 text-truncate"><b>Customer Name</b></div>
+                    <div class="col-sm-2 col-3 text-truncate"><b>Contact No</b></div>
+                    <div class="col-sm-3 col-3 text-truncate"><b>Site Details</b></div>
+                    <div class="col-sm-2 col-3 text-truncate"><b>Product Name</b></div>
+                </div>
+                <div class="row leave-row" *ngFor="let nonAllottedCall of nonAllottedCalls;let odd=odd; let even=even;" 
+                        [ngClass]="{ 'unread': nonAllottedCall.viewAlert == 1, 'odd' : odd, 'even' : even }"> 
+                    <div class="col-sm-2 col-2 text-truncate" title="{{ nonAllottedCall.createdAt | date :  'dd MMM yyyy' }}">{{ nonAllottedCall.createdAt | date :  "dd MMM yyyy"}}</div>                      
+                    <div class="col-sm-3 col-3 text-truncate" title="{{ nonAllottedCall.cdCustomerName | uppercase }}">{{ nonAllottedCall.cdCustomerName | uppercase}}</div>
+                    <div class="col-sm-2 col-3 text-truncate" title="{{ nonAllottedCall.cdContactNo | uppercase }}">{{ nonAllottedCall.cdContactNo | uppercase}}</div>            
+                    <div class="col-sm-3 col-3 text-truncate" title="{{ nonAllottedCall.siteDetails | uppercase }}">{{ nonAllottedCall.siteDetails | uppercase}}</div>
+                    <div class="col-sm-2 col-3 text-truncate" title="{{ nonAllottedCall.productDetails | uppercase}}">{{ nonAllottedCall.productDetails | uppercase}}</div>
+                </div>
+            </div>            
+        </div>
+        <div class="col-sm-6 p-2">
+            <div class="panel leave-box pt-2">
+                <div>
+                    <h4 style="margin-left: -15px;">Not Completed <!-- <span class="far fa-edit float-right"></span> --></h4> 
+                </div>
+                <div class="row leave-row-header"> 
+                    <div class="col-sm-2 col-2 text-truncate"><b>Allot No</b></div>  
+                    <div class="col-sm-3 col-3 text-truncate"><b>Allot Date</b></div>                
+                    <div class="col-sm-3 col-3 text-truncate"><b>Site Details</b></div>
+                    <div class="col-sm-3 col-3 text-truncate"><b>Employee Name</b></div>                    
+                </div>
+                <div class="row leave-row" *ngFor="let pendingCall of pendingCalls;let odd=odd; let even=even;"
+                        [ngClass]="{ 'unread': pendingCall.viewAlert == 1, 'odd' : odd, 'even' : even }"> 
+                    <div class="col-sm-2 col-2 text-truncate" title="{{ pendingCall.cdAllotNo | uppercase }}">{{ pendingCall.cdAllotNo | uppercase}}</div>  
+                    <div class="col-sm-3 col-3 text-truncate" title="{{ pendingCall.cdAllotDate | date :  'dd MMM yyyy' }}">{{ pendingCall.cdAllotDate | date :  "dd MMM yyyy" }}</div>            
+                    <div class="col-sm-3 col-3 text-truncate" title="{{ pendingCall.siteDetails | uppercase }}">{{ pendingCall.siteDetails | uppercase}}</div>
+                    <div class="col-sm-3 col-3 text-truncate">                        
+                        <span *ngIf="pendingCall.employeeList && pendingCall.employeeList.length > 0" title="{{ getEmployeeNameTitles(pendingCall.employeeList) }}">
+                            <span *ngFor="let emp of pendingCall.employeeList;let namesIndex = index">                                
+                                <span *ngIf="emp"> 
+                                    {{ emp.firstName | uppercase}} {{ emp.lastName | uppercase}}
+                                    <span *ngIf="pendingCall.employeeList.length > 1 && pendingCall.employeeList.length - 1 != namesIndex">, </span> 
+                                </span>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of second row  -->
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="row">
+        <div class="col-sm-6 p-2">
+            <div class="panel leave-box pt-2">
+                <div>
+                    <h4 style="margin-left: -15px;">In Progress <!-- <span class="far fa-edit float-right"></span> --></h4> 
+                </div>
+                <div class="row leave-row-header"> 
+                    <div class="col-sm-2 col-2 text-truncate"><b>Allot No</b></div>  
+                    <div class="col-sm-3 col-3 text-truncate"><b>Allot Date</b></div>                
+                    <div class="col-sm-3 col-3 text-truncate"><b>Site Details</b></div>
+                    <div class="col-sm-3 col-3 text-truncate"><b>Employee Name</b></div>                    
+                </div>
+                <div class="row leave-row" *ngFor="let onGoingCall of onGoingCalls;let odd=odd; let even=even;"
+                        [ngClass]="{ 'unread': onGoingCall.viewAlert == 1, 'odd' : odd, 'even' : even  }"> 
+                    <div class="col-sm-2 col-2 text-truncate" title="{{ onGoingCall.cdAllotNo | uppercase }}">{{ onGoingCall.cdAllotNo | uppercase}}</div>  
+                    <div class="col-sm-3 col-3 text-truncate" title="{{ onGoingCall.cdAllotDate | date : 'dd MMM yyyy' }}">{{ onGoingCall.cdAllotDate | date :  "dd MMM yyyy" }}</div>            
+                    <div class="col-sm-3 col-3 text-truncate" title="{{ onGoingCall.siteDetails | uppercase }}">{{ onGoingCall.siteDetails | uppercase}}</div>
+                    <div class="col-sm-3 col-3 text-truncate">
+                        <span *ngIf="onGoingCall.employeeList && onGoingCall.employeeList.length > 0" title="{{ getEmployeeNameTitles(onGoingCall.employeeList) }}">
+                            <span *ngFor="let emp of onGoingCall.employeeList;let namesIndex = index">                                
+                                <span *ngIf="emp"> 
+                                    {{ emp.firstName | uppercase}} {{ emp.lastName | uppercase}}
+                                    <span *ngIf="onGoingCall.employeeList.length > 1 && onGoingCall.employeeList.length - 1 != namesIndex">, </span> 
+                                </span>
+                            </span>
+                        </span>
+                    </div>
+                </div>              
+            </div>
+        </div>
+        <div class="col-sm-6 p-2">
+          <div class="panel leave-box pt-2">
+                <div>
+                    <h4 style="margin-left: -15px;">Completed <!--<span class="far fa-edit float-right"></span> --></h4> 
+                </div>
+                <div class="row leave-row-header"> 
+                    <div class="col-sm-2 col-2 text-truncate"><b>Allot No</b></div>  
+                    <div class="col-sm-3 col-3 text-truncate"><b>Call Attend Date</b></div>                
+                    <div class="col-sm-3 col-3 text-truncate"><b>Site Details</b></div>
+                    <div class="col-sm-3 col-3 text-truncate"><b>Customer Name</b></div>
+                    
+                </div>
+                <div class="row leave-row" *ngFor="let completedCall of completedCalls;  let odd=odd; let even=even;"
+                        [ngClass]="{ 'unread': completedCall.viewAlert == 1, 'odd' : odd, 'even' : even }"> 
+                    
+                    <div class="col-sm-2 col-2 text-truncate" title="{{ completedCall.cdAllotNo | uppercase }}">{{ completedCall.cdAllotNo | uppercase}}</div>  
+                    <div class="col-sm-3 col-3 text-truncate" title="{{ completedCall.cdAllotDate | date : 'dd MMM yyyy' }}">{{ completedCall.cdAllotDate | date :  "dd MMM yyyy"}}</div>            
+                    <div class="col-sm-3 col-3 text-truncate" title="{{ completedCall.siteDetails | uppercase }}">{{ completedCall.siteDetails | uppercase}}</div>
+                    <div class="col-sm-3 col-3 text-truncate" title="{{ completedCall.cdCustomerName | uppercase }}">{{ completedCall.cdCustomerName | uppercase}}</div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

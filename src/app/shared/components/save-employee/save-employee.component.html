@@ -1,0 +1,167 @@
+<form novalidate [formGroup]="addEmployeeForm" (ngSubmit)="onEmployeeDataSubmitClicked();">
+  <div class="emp-form-body"> 
+    <div class="row">
+        <div class="col-lg-10">
+        <div class="row form-group">
+            <div class="col-lg-6">
+                <div><label class="view-label">First Name</label></div>
+                <input formControlName="employeeId" class="form-control" type="hidden"/>
+                <input formControlName="firstName" class="form-control mandatory-field"
+                [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.firstName.errors }"/>
+                <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.firstName.errors" class="invalid-feedback">
+                    <div *ngIf="employeeForm.firstName.errors.required">Please provide the first name.</div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div><label class="view-label">Last Name</label></div>
+                <input formControlName="lastName" class="form-control mandatory-field"
+                [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.lastName.errors }"/>
+                <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.lastName.errors" class="invalid-feedback">
+                    <div *ngIf="employeeForm.lastName.errors.required">Please provide the second name.</div>
+                </div>
+            </div> 
+        </div> 
+        <div class="row form-group">
+            <div class="col-lg-6">
+                <div><label class="view-label">Primary Mobile Number</label></div>
+                <input formControlName="primaryMobileNo" class="form-control mandatory-field" type="text"
+                    [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.primaryMobileNo.errors }"/>
+                <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.primaryMobileNo.errors" class="invalid-feedback">
+                    <div *ngIf="employeeForm.primaryMobileNo.errors">Please provide a valid primary mobile number.</div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div><label class="view-label">Secondary Mobile Number</label></div>
+                <input formControlName="secondaryMobileNo" class="form-control" type="text"
+                    [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.secondaryMobileNo.errors }"/>
+                <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.secondaryMobileNo.errors" class="invalid-feedback">
+                    <div *ngIf="employeeForm.secondaryMobileNo.errors">Please provide a valid secondary mobile number.</div>
+                </div>
+            </div> 
+        </div> 
+        </div>
+        <div class="col-lg-2">
+            <div class="row">
+                <div class="col-lg-12">
+                    <img [src]="imgUploaded" height="100" width="100"
+                        [className]="!isValidImgUpload ? 'invalid-upload' : 'valid-upload'"> <br/>
+                    <span class="help-text">Image resolution: 150 X 150</span>
+                    <input type="file" id="img" style="display:none;" (change)="onSelectFile($event)"/>
+                    <br/>
+                    <label for="img" class="btn-primary img-label"><i class="fas fa-cloud-upload-alt"></i></label>
+                    <label class="btn-secondary img-label" (click)="removeImageUplaoded();"><i class="far fa-trash-alt"></i></label>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <div class="row form-group">
+        <div class="col-lg-8">
+            <div><label class="view-label">Employee Id</label></div> <!-- EmployeeId is Username -->
+            <input formControlName="userName" class="form-control mandatory-field"
+            [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.userName.errors }"/>
+            <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.userName.errors" class="invalid-feedback">
+                <div *ngIf="employeeForm.userName.errors.required">Please provide the username.</div>
+            </div>
+        </div>
+        <!-- <div class="col-lg-4" *ngIf="isEditMode === false">
+            <div><label class="view-label">Password</label></div>
+            <input formControlName="password" class="form-control mandatory-field" type="password"
+            [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.password.errors }"/>
+            <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.password.errors" class="invalid-feedback">
+                <div *ngIf="employeeForm.password.errors.required">Please provide the password.</div>
+            </div>            
+        </div>
+        <div class="col-lg-4"  *ngIf="isEditMode === false">
+            <div><label class="view-label">Confirm Password</label></div>
+            <input formControlName="confirmPassword" class="form-control mandatory-field" type="password"
+            [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.confirmPassword.errors }"/>
+            <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.confirmPassword.errors" class="invalid-feedback">
+                <div *ngIf="employeeForm.confirmPassword.errors">Password and confirm password are not matching.</div>
+            </div>            
+        </div> -->
+        <div class="col-lg-4"  *ngIf="isEditMode === true">
+            <div><label class="view-label">Reset Password</label></div>
+            <button type="button" class="btn btn-primary" (click)="resetPassword();">Reset Password</button>           
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-lg-4">
+            <div><label class="view-label">Primary Email</label></div>
+            <input formControlName="emailId" class="form-control mandatory-field"
+            [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.emailId.errors }"/>
+            <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.emailId.errors" class="invalid-feedback">
+                <div *ngIf="employeeForm.emailId.errors.required">Please provide the primary email address.</div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div><label class="view-label">Secondary Email</label></div>
+            <input formControlName="secondaryEmailId" class="form-control"
+            [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.secondaryEmailId.errors }"/>
+            <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.secondaryEmailId.errors" class="invalid-feedback">
+                <div *ngIf="employeeForm.secondaryEmailId.errors.required">Please provide the secondary email address.</div>
+            </div>           
+        </div>
+        <div class="col-lg-4">
+            <div>
+                <label class="view-label">Department</label>
+            </div>
+            <select class="form-control mandatory-field" formControlName="departmentId"
+                [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.departmentId.errors }" >      
+                <option value="">Select</option>          
+                <option *ngFor="let department of departmentList" [ngValue]="department?.departmentId">{{department?.departmentName}}</option>
+            </select>
+            <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.departmentId.errors" class="invalid-feedback">
+                <div *ngIf="employeeForm.departmentId.errors.required">Please select a department.</div>
+            </div>                       
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-lg-4">
+            <div><label class="view-label">Employee Role</label></div>
+            <select class="form-control mandatory-field" formControlName="role"
+                [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.role.errors }" >      
+                <option value="">Select</option>
+                <option *ngFor="let userRole of userRoleList" [ngValue]="userRole.userRoleId">{{userRole.userRoleName}}</option>
+            </select>
+            <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.role.errors" class="invalid-feedback">
+                <div *ngIf="employeeForm.role.errors.required">Please select an employee role.</div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div>
+                <label class="view-label">Designation</label>
+            </div>
+            <select class="form-control mandatory-field" formControlName="position"
+                [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.position.errors }" >      
+                <option value="">Select</option>          
+                <option *ngFor="let designation of designationList" [ngValue]="designation.designationName">{{designation.designationName}}</option>
+            </select>
+            <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.position.errors" class="invalid-feedback">
+                <div *ngIf="employeeForm.position.errors.required">Please select a designation.</div>
+            </div>          
+        </div>
+        <div class="col-lg-4">
+            <div>
+                <label class="view-label">Gender</label>
+            </div>
+            <select class="form-control mandatory-field" formControlName="gender"
+                [ngClass]="{ 'is-invalid': isEmployeeFormAttemptSubmit && employeeForm.gender.errors }" >      
+                <option value="">Select</option>          
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="others">Others</option>
+            </select>
+            <div *ngIf="isEmployeeFormAttemptSubmit && employeeForm.gender.errors" class="invalid-feedback">
+                <div *ngIf="employeeForm.gender.errors.required">Please select the gender.</div>
+            </div>                       
+        </div>
+    </div>
+    <br/>
+    <div class="row form-group">
+        <div class="col-lg-12">
+            <button class="btn btn-primary" type="submit">Save</button>
+            <button class="btn btn-danger" type="reset" (click)="resetEmployeeSaveForm();">Clear</button>     
+        </div>   
+    </div>
+  </div>
+</form>

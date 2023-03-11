@@ -1,0 +1,590 @@
+<div class="page-header">
+  <h2>
+      Project Management      
+  </h2>    
+</div>
+<br/>
+<ngb-tabset class="tabset1" #tabs>
+    <ngb-tab tabindex="0">
+        <ng-template ngbTabTitle><span class="title1">Project List</span></ng-template>
+        <ng-template ngbTabContent>
+            <div class="row">
+            <div class="col-lg-12 p-3">
+                <button class="btn btn-info float-right" (click)="resetAndOpenProjectForm();"><i class="fa fa-plus"></i> Project</button>
+            </div>
+            </div>          
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table" [mfData]="projectInfoList" #mf="mfDataTable" [mfRowsOnPage]="50">
+                        <thead>
+                        <tr>
+                            <th>
+                                <mfDefaultSorter by="projectName">Project Name</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="projectCode">Project Code</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="amcCode">AMC Code</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="description">Description</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="projectValue">Project Value</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="amountReceived">Amount Received</mfDefaultSorter>
+                            </th> 
+                            <th>
+                                <mfDefaultSorter by="outstandingAmount">Outstanding Amount</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="projectStatus">Project Status</mfDefaultSorter>
+                            </th>              
+                            <th>
+                                <mfDefaultSorter by="startDate">Start Date</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="endDate">End Date</mfDefaultSorter>
+                            </th>
+                        <th>
+                            Action
+                        </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of mf.data">
+                            <td>{{item.projectName}}</td>
+                            <td>{{item.projectCode}}</td>              
+                            <td>{{item.amcCode }}</td>
+                            <td>{{item.description}}</td>
+                            <td>{{item.projectValue | number }}</td>
+                            <td>{{item.amountReceived | number}}</td>
+                            <td>{{item.outstandingAmount | number}}</td>
+                            <td>{{item.projectStatus}}</td>              
+                            <td>{{item.startDate | date :  "dd MMM yyyy" }}</td>
+                            <td>{{item.endDate | date :  "dd MMM yyyy" }}</td>
+                            <td>
+                                <button class="btn btn-sm approve" (click)="editProjectDetails(item);"><i class="fas fa-check"></i> Edit </button>
+                                <!-- <button class="btn btn-sm reject" (click)="approveOrRejectLeave(item.leaveId, 1);"><i class="fas fa-ban"></i> Reject</button> -->
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="9">
+                                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </ng-template>
+    </ngb-tab>
+    <ngb-tab tabindex="1">
+        <ng-template ngbTabTitle><span class="title1">Project Resources</span></ng-template>
+        <ng-template ngbTabContent>
+        <br/>
+        <form novalidate [formGroup]="projectSearchForm" (ngSubmit)="onProjectAssigned();">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="row form-group">
+                    <div class="col-lg-6">
+                        <div><label>Project Name</label></div>
+                        <select class="form-control" formControlName="projectId" (change)="onProjectSelectionChanged($event);"
+                            [ngClass]="{ 'is-invalid': isProjectSearchFormAttemptSubmit && projectSearchFormFields.projectId?.errors }">
+                            <option value="">Select</option>              
+                            <option *ngFor="let project of projectInfoLive"
+                                [value]="project.projectId">
+                                {{ project.projectName }}
+                            </option>
+                        </select>
+                        <div *ngIf="isProjectSearchFormAttemptSubmit && projectSearchFormFields.projectId?.errors" class="invalid-feedback">
+                            <div *ngIf="projectSearchFormFields.projectId?.errors.required">Please select a project.</div>
+                        </div> 
+                    </div>
+                    <div class="col-lg-6">
+                        <div><label>Employee Name</label></div>
+                        <select class="form-control" formControlName="userId" (change)="onUserSelected($event);"
+                            [ngClass]="{ 'is-invalid': isProjectSearchFormAttemptSubmit && projectSearchFormFields.userId?.errors }">
+                            <option value="">Select</option>              
+                            <option *ngFor="let employee of employeeList"
+                                [value]="employee.userId">
+                                {{ employee.firstName }} {{ employee.lastName }}
+                            </option>
+                        </select>
+                        <div *ngIf="isProjectSearchFormAttemptSubmit && projectSearchFormFields.projectId?.errors" class="invalid-feedback">
+                            <div *ngIf="projectSearchFormFields.projectId?.errors.required">Please select a project.</div>
+                        </div> 
+                    </div>
+                    </div>
+                    <div class="row form-group">
+                    <div class="col-lg-6">
+                        <label>Start Date</label><br/>
+                        <my-date-picker name="startDate" [options]="projectPickerOptions" class="form-control"
+                            formControlName="startDate" [ngClass]="{ 'is-invalid': isProjectSearchFormAttemptSubmit && projectSearchFormFields.startDate?.errors }">
+                        </my-date-picker>       
+                        <div *ngIf="isProjectSearchFormAttemptSubmit && projectSearchFormFields.startDate?.errors" class="invalid-feedback">
+                            <div *ngIf="projectSearchFormFields.startDate?.errors.required">Please select the start date.</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <label>End Date</label><br/>
+                        <my-date-picker name="endDate" [options]="projectPickerOptions" class="form-control"
+                            formControlName="endDate" [ngClass]="{ 'is-invalid': isProjectSearchFormAttemptSubmit && projectSearchFormFields.endDate?.errors }">
+                        </my-date-picker>       
+                        <div *ngIf="isProjectSearchFormAttemptSubmit && projectSearchFormFields.endDate?.errors" class="invalid-feedback">
+                            <div *ngIf="projectSearchFormFields.endDate?.errors.required">Please select the end date.</div>
+                        </div>
+                    </div>
+                    </div>                
+                    <div class="row">
+                    <div class="col-lg-12">
+                        <span class="float-right">
+                        <button type="reset" class="btn btn-danger">Reset</button>
+                        <button type="submit" class="btn btn-primary">Assign</button>
+                        </span>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <user-project-allocation [allocationInfo]="userProjectAllocationInfo"></user-project-allocation>
+                </div>
+            </div>
+        </form>
+        <br/><br/>
+        <table class="table" [mfData]="projectResourceList" #mf="mfDataTable" [mfRowsOnPage]="50">
+            <thead>
+            <tr>
+                <th>
+                    <mfDefaultSorter by="employeeCode">Employee Code</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="firstName">First Name</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="lastName">Last Name</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="projectCode">Project Code</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="amcCode">AMC Code</mfDefaultSorter>
+                </th>
+                <th>
+                    <mfDefaultSorter by="startDate">Start Date</mfDefaultSorter>
+                </th>              
+                <th>
+                    <mfDefaultSorter by="endDate">End Date</mfDefaultSorter>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of mf.data">
+                <!-- <td><a class="link" [routerLink]="['/user-info/']" [queryParams]="{ 'uid': item.userId}">{{item.firstName}}</a></td>
+                <td><a class="link" [routerLink]="['/user-info/']" [queryParams]="{ 'uid': item.userId}">{{item.lastName}}</a></td> -->
+                <td>{{item.employeeCode}}</td>
+                <td>{{item.firstName}}</td>
+                <td>{{item.lastName}}</td>
+                <td>{{item.projectCode }}</td>
+                <td>{{item.amcCode}}</td>
+                <td>{{item.startDate | date :  "dd MMM yyyy"}}</td>   
+                <td>{{item.endDate | date :  "dd MMM yyyy" }}</td>  
+            </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                    </td>
+                </tr>
+            </tfoot>
+            </table>
+        </ng-template>
+    </ngb-tab>
+    <ngb-tab tabindex="2">
+        <ng-template ngbTabTitle><span class="title1">Project Payment</span></ng-template>
+        <ng-template ngbTabContent>
+            <div class="row">
+            <div class="col-lg-12 p-3">
+                <button class="btn btn-info float-right" (click)="resetAndOpenProjectPaymentForm();"><i class="fa fa-plus"></i> Project Payment</button>
+            </div>
+            </div>          
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table" [mfData]="projectPaymentInfoList" #mf="mfDataTable" [mfRowsOnPage]="50">
+                        <thead>
+                        <tr>
+                            <th>
+                                <mfDefaultSorter by="projectName">Project Name</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="amountReceived">Amount Recieved</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="remarks">Remarks</mfDefaultSorter>
+                            </th>                            
+                            <th>
+                                <mfDefaultSorter by="amountReceivedDate">Received Date</mfDefaultSorter>
+                            </th>
+                            
+                            <th>
+                                <mfDefaultSorter by="chequeNo">Cheque #</mfDefaultSorter>
+                            </th> 
+                            <th>
+                                <mfDefaultSorter by="invoiceNo">Invoice #</mfDefaultSorter>
+                            </th>
+                            <!-- <th>
+                                <mfDefaultSorter by="projectStatus">Project Status</mfDefaultSorter>
+                            </th>              
+                            <th>
+                                <mfDefaultSorter by="startDate">Start Date</mfDefaultSorter>
+                            </th>
+                            <th>
+                                <mfDefaultSorter by="endDate">End Date</mfDefaultSorter>
+                            </th> -->
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of mf.data">
+                            <td>{{item.projectName}}</td>
+                            <td>{{item.amountReceived }}</td>
+                            <td>{{item.remarks}}</td>    
+                            <td>{{item.amountReceivedDate | date :  "dd MMM yyyy" }}</td>
+                             
+                            <td>{{item.chequeNo }}</td>
+                            <td>{{item.invoiceNo }}</td>
+                            <!--<td>{{item.projectStatus}}</td>              
+                            <td>{{item.startDate | date :  "dd MMM yyyy" }}</td>
+                            <td>{{item.endDate | date :  "dd MMM yyyy" }}</td> -->
+                            <td>
+                                <button class="btn btn-sm approve" (click)="editProjectPaymentDetails(item);"><i class="fas fa-check"></i> Edit </button>                                
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="9">
+                                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </ng-template>
+    </ngb-tab>
+</ngb-tabset>
+
+<!-- View Modal Form -->
+<div class="modal project-model" id="projectViewModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <button class="close float-right" type="button" data-dismiss="modal" appModal  (click)="closeProjectView();">&times;</button>
+        <ngb-tabset class="tabset1" #tabs>
+            <ngb-tab tabindex="0">
+                <ng-template ngbTabTitle><span class="title1">Project Details</span></ng-template>
+                <ng-template ngbTabContent>
+                    <form novalidate [formGroup]="saveProjectForm" (ngSubmit)="onProjectDetailsSubmitted();">                        
+                        <div class="modal-body">        
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div><label>Project Code</label></div>
+                                    <input formControlName="projectId" class="form-control" type="hidden" />
+                                    <input formControlName="projectCode" class="form-control"
+                                    [ngClass]="{ 'is-invalid': isProjectFormAttemptSubmit && projectForm.projectCode?.errors }"/>
+                                    <div *ngIf="isProjectFormAttemptSubmit && projectForm.projectCode?.errors" class="invalid-feedback">
+                                        <div *ngIf="projectForm.projectCode?.errors.required">Please provide the project code.</div>
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div><label>Client Name</label></div>
+                                    <input formControlName="clientName" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div><label>Project Name</label></div>
+                                    <input formControlName="projectName" class="form-control"
+                                    [ngClass]="{ 'is-invalid': isProjectFormAttemptSubmit && projectForm.projectName?.errors }"/>
+                                    <div *ngIf="isProjectFormAttemptSubmit && projectForm.projectName?.errors" class="invalid-feedback">
+                                        <div *ngIf="projectForm.projectName?.errors.required">Please provide the project name.</div>
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                            <div class="col-lg-12">
+                                <div><label>AMC Code</label></div>
+                                <input formControlName="amcCode" class="form-control" />
+                            </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div><label>Description</label></div>
+                                    <input formControlName="description" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div><label>Scope Of Work</label></div>
+                                    <input formControlName="scopeOfWork" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div><label>Project Status</label></div>
+                                    <select class="form-control" formControlName="projectStatusId" 
+                                        [ngClass]="{ 'is-invalid': isProjectFormAttemptSubmit && projectForm.projectStatus?.errors }">
+                                        <option value="">Select</option>              
+                                        <option *ngFor="let projectStatus of projectStatusList" [value]="projectStatus.projectStatusId">{{ projectStatus.projectStatusName }}</option>
+                                    </select>
+                                    <div *ngIf="isProjectFormAttemptSubmit && projectForm.projectStatus?.errors" class="invalid-feedback">
+                                        <div *ngIf="projectForm.projectStatus?.errors.required">Please provide the project status.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-6">
+                                    <label>Start Date</label><br/>
+                                    <my-date-picker name="startDate" [options]="projectPickerOptions" class="form-control"
+                                        formControlName="startDate" [ngClass]="{ 'is-invalid': isProjectFormAttemptSubmit && projectForm.startDate?.errors }">
+                                    </my-date-picker>       
+                                    <div *ngIf="isProjectFormAttemptSubmit && projectForm.startDate?.errors" class="invalid-feedback">
+                                        <div *ngIf="projectForm.startDate?.errors.required">Please select the start date.</div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label>End Date</label><br/>
+                                    <my-date-picker name="endDate" [options]="projectPickerOptions" class="form-control"
+                                        formControlName="endDate" [ngClass]="{ 'is-invalid': isProjectFormAttemptSubmit && projectForm.endDate?.errors }">
+                                    </my-date-picker>       
+                                    <div *ngIf="isProjectFormAttemptSubmit && projectForm.endDate?.errors" class="invalid-feedback">
+                                        <div *ngIf="projectForm.endDate?.errors.required">Please select the end date.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div><label>Payment Status</label></div>
+                                    <select class="form-control" formControlName="paymentStatus" 
+                                        [ngClass]="{ 'is-invalid': isProjectFormAttemptSubmit && projectForm.paymentStatus?.errors }">
+                                        <option value="">Select</option>              
+                                        <option *ngFor="let paymentStatus of paymentStatusList" [value]="paymentStatus.paymentStatusId">{{ paymentStatus.paymentStatusName }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div><label>Contract Reference Number</label></div>
+                                    <input formControlName="contractRefNo" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <div><label>Date Of Contract</label></div>
+                                    <my-date-picker name="dateOfContract" [options]="projectPickerOptions" class="form-control"
+                                        formControlName="dateOfContract">
+                                    </my-date-picker> 
+                                    <!-- <input formControlName="dateOfContract" class="form-control" /> -->
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Quotation Number</label>
+                                    <input formControlName="quotationNo" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Purchase Order Number</label>
+                                    <input formControlName="purchaseOrderNo" class="form-control" />  
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Contact Number</label>  
+                                    <input formControlName="contactNo" class="form-control" />  
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Project Job Card Approval</label>  
+                                    <input formControlName="projectJobCardApproval" class="form-control" />  
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Details Of Suppliers</label>  
+                                    <input formControlName="detailsOfSuppliers" class="form-control" />  
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Details Of SubContractors</label>  
+                                    <input formControlName="detailsOfSubContractors" class="form-control" />  
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Comments</label>  
+                                    <input formControlName="comments" class="form-control" />  
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Project Value</label>  
+                                    <input formControlName="projectValue" class="form-control" />  
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Amount Received</label>  
+                                    <input formControlName="amountReceived" class="form-control" />  
+                                </div>
+                            </div>
+                            <!-- <div class="row form-group">
+                                <div class="col-lg-12">
+                                    <label>Outstanding Amount</label>  
+                                    <input formControlName="outstandingAmount" class="form-control" />  
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit">Save</button>
+                            <button class="btn btn-danger" type="button" data-dismiss="modal" appModal (click)="closeProjectView();">Close</button>
+                        </div>
+                    </form>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab tabindex="1" [disabled]="isProjectDocumentsTabDisabled">
+                <ng-template ngbTabTitle><span class="title1">Project Documents</span></ng-template>
+                <ng-template ngbTabContent>
+                    <div class="modal-body">        
+                        <div class="row form-group">
+                            <div class="col-lg-12">
+                                <project-docs [projectId]="selectedProjectId"></project-docs>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>         
+      </div>
+    </div>
+  </div>
+<!-- End Of Modal Form -->
+
+
+<!-- View Modal Form -->
+<div class="modal project-model" id="projectPaymentViewModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <button class="close float-right" type="button" data-dismiss="modal" appModal  (click)="closeProjectPaymentView();">&times;</button>
+        <div class="modal-header">
+            Header
+        </div>
+        <form novalidate [formGroup]="projectPaymentStatusForm" (ngSubmit)="onProjectPaymentSubmitted();"> 
+            <div class="modal-body">        
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <div><label>Project</label></div>
+                        <input formControlName="projectPaymentStatusid" class="form-control" type="hidden" />
+                        <select class="form-control" formControlName="projectId"
+                            [ngClass]="{ 'is-invalid': isProjectPaymentFormAttemptSubmit && projectPaymentForm.projectId?.errors }">
+                            <option value="">Select</option>              
+                            <option *ngFor="let project of projectInfoLive"
+                                [value]="project.projectId">
+                                {{ project.projectName }}
+                            </option>
+                        </select>
+                        <div *ngIf="isProjectPaymentFormAttemptSubmit && projectPaymentForm.projectId?.errors" class="invalid-feedback">
+                            <div *ngIf="projectPaymentForm.projectId?.errors.required">Please select the project.</div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <div><label>Amount Received</label></div>
+                        <input formControlName="amountReceived" class="form-control" 
+                        [ngClass]="{ 'is-invalid': isProjectPaymentFormAttemptSubmit && projectPaymentForm.amountReceived?.errors }"/>
+                        <div *ngIf="isProjectPaymentFormAttemptSubmit && projectPaymentForm.amountReceived?.errors" class="invalid-feedback">
+                            <div *ngIf="projectPaymentForm.amountReceived?.errors.required">Please provide the amount received.</div>
+                        </div> 
+                    </div>
+                </div>
+                <!-- 
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <div><label>Project Name</label></div>
+                        <input formControlName="projectName" class="form-control"
+                        [ngClass]="{ 'is-invalid': isProjectPaymentFormAttemptSubmit && projectPaymentForm.projectName?.errors }"/>
+                        <div *ngIf="isProjectPaymentFormAttemptSubmit && projectPaymentForm.projectName?.errors" class="invalid-feedback">
+                            <div *ngIf="projectPaymentForm.projectName?.errors.required">Please provide the project name.</div>
+                        </div> 
+                    </div>
+                </div> -->
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <label>Amount Received Date</label><br/>
+                        <my-date-picker name="amountReceivedDate" [options]="projectPickerOptions" class="form-control"
+                            formControlName="amountReceivedDate" [ngClass]="{ 'is-invalid': isProjectPaymentFormAttemptSubmit && projectPaymentForm.amountReceivedDate?.errors }">
+                        </my-date-picker>       
+                        <div *ngIf="isProjectPaymentFormAttemptSubmit && projectPaymentForm.amountReceivedDate?.errors" class="invalid-feedback">
+                            <div *ngIf="projectPaymentForm.amountReceivedDate?.errors.required">Please select the amount received date.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <div><label>Remarks</label></div>
+                        <input formControlName="remarks" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <div><label>Retention</label></div>
+                        <input formControlName="retention" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <div><label>Security Bond</label></div>
+                        <input formControlName="securityBond" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <div><label>Bank Name</label></div>
+                        <input formControlName="bankName" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <div><label>Cheque No</label></div>
+                        <input formControlName="chequeNo" class="form-control" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <div><label>Invoice No</label></div>
+                        <input formControlName="invoiceNo" class="form-control" />
+                    </div>
+                </div>               
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit">Save</button>
+                <button class="btn btn-danger" type="button" data-dismiss="modal" appModal (click)="closeProjectPaymentView();">Close</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- End Of Modal Form -->

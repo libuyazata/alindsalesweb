@@ -1,0 +1,446 @@
+<div class="page-header-container">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h4>
+                        <span>NEW WORK DETAILS</span>    
+                        <span class="float-right">
+                                <download-ctrl (click)="onDownloadExcelClicked();"></download-ctrl>
+                        </span>            
+                    </h4>    
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 search-container">
+                <form novalidate [formGroup]="newWorkReportSearchForm" (ngSubmit)="onWorkDetailsSearched();">
+                    <div class="row">
+                        <!-- <div class="col-lg-2">                    
+                            <div class="search-label-container"><label>Status</label></div>
+                            <select class="form-control" formControlName="serviceReportStatus">
+                                <option value="all">Select</option>
+                                <option value="all">All</option>
+                                <option value="completed">Completed</option>
+                                <option value="not completed">Not Completed</option>
+                            </select>
+                        </div> -->
+                        <div class="col-lg-2">
+                            <div class="search-label-container"><label>From</label></div>
+                            <input formControlName="dateFrom" class="form-control"  type="date"/>  
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="search-label-container"><label>To</label></div>
+                            <input formControlName="dateTo" class="form-control" type="date" />  
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="search-label-container"><label>Search</label></div>
+                            <input formControlName="searchKeyWord" class="form-control" />  
+                        </div>
+                        <!-- <div class="col-lg-2">
+                            <div class="search-label-container"><label>Guarantee Period</label></div>
+                            <select class="form-control" formControlName="gurenteePeriod">
+                                <option value="all">Select</option>
+                                <option value="all">All</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select> 
+                        </div> -->
+                        <div class="col-lg-2 pt-4">                    
+                            <span class="float-right">
+                                <button class="btn btn-info" type="submit">Search</button>  
+                                <button class="btn btn-danger" type="reset">Reset</button>
+                            </span>
+                        </div>
+                        <!--<div class="col-lg-9 pt-4">
+                            <span class="float-right">
+                                <button class="btn btn-info float-right" (click)="openDepartmentEntryForm();">
+                                    <i class="fa fa-plus"></i> Create
+                                </button>
+                            </span>
+                        </div> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="pt-2">
+      <div class="row">
+          <div class="col-lg-12">
+               <table class="table" [mfData]="newWorkList" #mf="mfDataTable" [mfRowsOnPage]="50">
+                    <thead>
+                    <tr>
+                        <th>
+                            <mfDefaultSorter by="slNo">Sl No</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="alAllotNo">Allot No</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="callDetail.cdCustomerName">Customer Name</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="callDetail.cdContactNo">Phone Number</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="callDetail.siteDetails">Site Details</mfDefaultSorter>
+                        </th>
+                        <th>
+                            <mfDefaultSorter by="callDetail.cdAllotDate">Allot Date</mfDefaultSorter>
+                        </th>         
+                        <th>
+                            <mfDefaultSorter by="callDetail.cdStatus">Status</mfDefaultSorter>
+                        </th>             
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of mf.data;" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+                        <td>{{ item.slNo}}</td>
+                        <td>{{item.alAllotNo}}</td>  
+                        <td class="text-truncate-cell">{{item.callDetail.cdCustomerName | uppercase }}</td>
+                        <td>{{item.callDetail.cdContactNo }}</td>   
+                        <td class="text-truncate-cell" title="{{item.callDetail.siteDetails | uppercase}}">{{item.callDetail.siteDetails | uppercase }}</td>
+                        <td>{{item.callDetail.cdAllotDate  | date :  "dd MMM yyyy" }}</td> 
+                        <!-- <td>{{item.callDetail.cdStatus | uppercase }}</td> -->
+                        <td>
+                            {{ item.uiStatus | uppercase}}
+                            <!-- {{item.callDetail.cdStatus.toLowerCase() == "on going" ? item.callDetail.uiStatus.toUpperCase() : item.callDetail.cdStatus.toUpperCase() }} -->
+                        </td>
+                        <td>   
+                            <!-- <span class="pr-3">
+                                <a class="link" *ngIf="item.callDetail.cdStatus.toLowerCase() == 'on going'" 
+                                    (click)="allotCallDetails(item);"><i class="fas fa-user-plus"></i></a>
+                                <a class="link disabled-link" *ngIf="item.callDetail.cdStatus.toLowerCase() != 'on going'">
+                                    <i class="fas fa-user-plus"></i></a>
+                            </span> -->
+                            <a class="link" *ngIf="item.uiStatus.toLowerCase() == 'new'"
+                             (click)="onServiceRecordClicked(item)"><i class="far fa-edit"></i></a>
+                            <a class="link disabled-link" *ngIf="item.uiStatus.toLowerCase() != 'new'"><i class="far fa-edit"></i></a> 
+
+                            <span class="pl-2">
+                                <a class="link" title="Click to view" *ngIf="item.uiStatus.toLowerCase() == 'completed' || item.uiStatus.toLowerCase() == 'not completed'"
+                                    (click)="openNewWorkViewModal(item);"><i class="fas fa-eye"></i></a>
+                                <a class="link disabled-link" *ngIf="item.uiStatus.toLowerCase() == 'new'"><i class="fas fa-eye"></i></a>
+                            </span> 
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="7">
+                            <mfBootstrapPaginator [rowsOnPageSet]="[12]"></mfBootstrapPaginator>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>          
+          </div>
+      </div>
+    </div>
+    
+<!-- Employee Attendance Modal Form -->
+<div class="modal" id="minOfMeetingModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Minutes Of Meeting</h5>
+          <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeMoMModalView();">&times;</button>
+        </div>
+        <form novalidate [formGroup]="minsOfMeetingForm" (ngSubmit)="onMoMDetailsSubmitted();">
+            <div class="modal-body">
+                 <div class="row form-group">
+                    <!-- <div class="col-lg-12">
+                        <label>Customer Details</label>            
+                    </div> -->
+                    <div class="col-lg-12">
+                        <table width="100%">                            
+                            <tr>
+                                <td><b>Customer Name:</b></td><td>{{ allotedWork?.callDetail.cdCustomerName | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Contact No:</b></td><td>{{ allotedWork?.callDetail.cdContactNo | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Board/Division:</b></td><td>{{ allotedWork?.callDetail.cdBoardDivision | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Site Details:</b></td><td>{{ allotedWork?.callDetail.siteDetails | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Relay/Panel Details:</b></td><td>{{ allotedWork?.callDetail.cdRelayPanelDetails | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Nature of Job:</b></td><td>{{ allotedWork?.callDetail.natureOfJobs.jobNature | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Reported Problem:</b></td><td>{{ allotedWork?.callDetail.cdProblemDetails | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Within Guarantee Period:</b></td><td>{{ allotedWork?.callDetail.cdGuranteePeriod | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Product Sl No:</b></td><td>{{ allotedWork?.callDetail.productSlNo | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td class="width-30-perc"><b>Service Request Id:</b></td><td>{{ allotedWork?.callDetail.serviceRequestId | uppercase}}</td>
+                            </tr>
+                            <tr>
+                                <td class="width-30-perc"><b>Allot No:</b></td><td>{{ allotedWork?.alAllotNo | uppercase}}</td>
+                            </tr>                            
+                            <tr>
+                                <td class="width-30-perc"><b>Allot Date:</b></td><td>{{ allotedWork?.callDetail.cdAllotDate | date :  "dd MMM yyyy" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <label class="view-label">Product Sl No</label>            
+                    </div>
+                    <div class="col-lg-12">
+                        <input formControlName="productSlNo" class="form-control mandatory-field" type="text" maxlength="20"
+                            [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.productSlNo.errors }" />                
+                        <div *ngIf="isMomFormAttemptSubmit && momForm.productSlNo.errors" class="invalid-feedback">
+                            <div *ngIf="momForm.productSlNo.errors.required">Please provide the product number.</div>
+                        </div>
+                    </div>
+                </div>                
+                <div class="row form-group">
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label class="view-label">Call Attend Date</label>            
+                            </div>
+                            <div class="col-lg-12">
+                                <input type="hidden" formControlName="sr_cd_id" />
+                                <input formControlName="srCallAttendDate" class="form-control mandatory-field" type="date"
+                                    [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.srCallAttendDate.errors }" />                
+                                <div *ngIf="isMomFormAttemptSubmit && momForm.srCallAttendDate.errors" class="invalid-feedback">
+                                    <div *ngIf="momForm.srCallAttendDate.errors.required">Please provide the call attend date.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label class="view-label">Call Close Date</label>            
+                            </div>
+                            <div class="col-lg-12">
+                                <input formControlName="srCallClosedDate" class="form-control mandatory-field" type="date"
+                                    [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.srCallClosedDate.errors }" />                
+                                <div *ngIf="isMomFormAttemptSubmit && momForm.srCallClosedDate.errors" class="invalid-feedback">
+                                    <div *ngIf="momForm.srCallClosedDate.errors.required">Please provide the call close date.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <label class="view-label">Primary Observations</label>            
+                    </div>
+                    <div class="col-lg-12">
+                        <ng-multiselect-dropdown
+                            class="mandatory-field"
+                            name="obervationDetails"
+                            [placeholder]="'Select Primary Observations'"
+                            [data]="observationList"
+                            formControlName="obervationDetails"
+                            [settings]="obmDropdownSettings"
+                            [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.obervationDetails.errors }">
+                        </ng-multiselect-dropdown>
+                        <!-- <input formControlName="obervationDetails" [(ngModel)]="observationModel" [ngbTypeahead]="searchObservations"
+                            class="form-control mandatory-field" type="text" maxlength="20"
+                            [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.obervationDetails.errors }"/>                 -->
+                        <div *ngIf="isMomFormAttemptSubmit && momForm.obervationDetails.errors" class="invalid-feedback">
+                            <div *ngIf="momForm.obervationDetails.errors.required">Please provide the primary observations details.</div>
+                        </div>
+                    </div>
+                </div>                
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <label class="view-label">Actions Undertaken</label>            
+                    </div>
+                    <div class="col-lg-12">
+                        <ng-multiselect-dropdown
+                            class="mandatory-field"
+                            name="srNaturalOfService"
+                            [placeholder]="'Select Actions Undertaken'"
+                            [data]="natureOfJobList"
+                            formControlName="srNaturalOfService"
+                            [settings]="natureOfJobDropdownSettings"
+                            [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.srNaturalOfService.errors }">
+                        </ng-multiselect-dropdown>
+                        <!-- <textarea formControlName="srNaturalOfService" class="form-control mandatory-field" type="text" maxlength="400"
+                            [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.srNaturalOfService.errors }"></textarea> -->
+                        <div *ngIf="isMomFormAttemptSubmit && momForm.srNaturalOfService.errors" class="invalid-feedback">
+                            <div *ngIf="momForm.srNaturalOfService.errors.required">Please provide the actions undertaken.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <label class="view-label">Status</label>            
+                    </div>
+                    <div class="col-lg-12">
+                        <select class="form-control mandatory-field" formControlName="srCallStatus" 
+                            [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.srCallStatus.errors }">   
+                              <option value="">Select</option>
+                              <option value="1">Completed</option>
+                              <option value="2">Not Completed</option>
+                        </select>
+                        <div *ngIf="isMomFormAttemptSubmit && momForm.srCallStatus.errors" class="invalid-feedback">
+                            <div *ngIf="momForm.srCallStatus.errors.required">Please select the call status.</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row form-group">
+                    <div class="col-lg-12">
+                        <label>Notification Status</label>            
+                    </div>
+                    <div class="col-lg-12">
+                        <input formControlName="srNotificationStatus" class="form-control" type="text"
+                            [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.srNotificationStatus.errors }" />                
+                        <div *ngIf="isMomFormAttemptSubmit && momForm.srNotificationStatus.errors" class="invalid-feedback">
+                            <div *ngIf="momForm.srNotificationStatus.errors.required">Please provide the srNotificationStatus.</div>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <label class="view-label">Remarks</label>            
+                    </div>
+                    <div class="col-lg-12">
+                        <textarea formControlName="srRemarks" class="form-control mandatory-field" type="text" maxlength="400"
+                            [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.srRemarks.errors }"></textarea>
+                        <div *ngIf="isMomFormAttemptSubmit && momForm.srRemarks.errors" class="invalid-feedback text-area-invalid-feedback">
+                            <div *ngIf="momForm.srRemarks.errors.required">Please provide the remarks.</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row form-group">
+                    <div class="col-lg-12">
+                        <label class="view-label">Report Problem</label>            
+                    </div>
+                    <div class="col-lg-12">
+                        <input formControlName="srReportedProblem" class="form-control mandatory-field" type="text" maxlength="400"
+                            [ngClass]="{ 'is-invalid': isMomFormAttemptSubmit && momForm.srReportedProblem.errors }" />                
+                        <div *ngIf="isMomFormAttemptSubmit && momForm.srReportedProblem.errors" class="invalid-feedback">
+                            <div *ngIf="momForm.srReportedProblem.errors.required">Please provide the report problem.</div>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="row form-group">
+                    <div class="col-lg-12">
+                        <label class="view-label">Upload</label>
+                    </div>
+                    <div class="col-lg-12">
+                        <input type="file" id="momFile" (change)="onMoMFileSelected($event.target.files)">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-info" type="submit">Save</button>
+                <button class="btn btn-danger" type="reset" title="Click to reset.">Reset</button>                
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- End Of Modal Form -->
+
+  <!-- View Model -->
+  <div class="modal" id="serviceReportViewModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Minutes of Meeting</h5>
+                    <button class="close" type="button" data-dismiss="modal" appModal  (click)="closeMoMViewModal();">&times;</button>
+                </div>           
+                <div class="modal-body" id="serviceReportPrintSection">
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Customer Name<span>:</span></label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8 wrap-div">{{ serviceReportData?.callDetail.cdCustomerName | uppercase}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Contact No</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{ serviceReportData?.callDetail.cdContactNo | uppercase}}</div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Board/Division</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8 wrap-div">{{ serviceReportData?.callDetail.cdBoardDivision | uppercase}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Site Details</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8 wrap-div">{{ serviceReportData?.callDetail.siteDetails | uppercase}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Relay/Panel Details</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8 wrap-div">{{ serviceReportData?.callDetail.cdRelayPanelDetails }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Nature of Job</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{ serviceReportData?.callDetail.natureOfJobs.jobNature | uppercase}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Reported Problem</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8 wrap-div">{{serviceReportData?.callDetail.cdProblemDetails }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Gurantee Period</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{ serviceReportData?.callDetail.cdGuranteePeriod | uppercase}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Allot No</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{serviceReportData?.callDetail.cdAllotNo }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Product Sl No</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{ serviceReportData?.callDetail.productSlNo | uppercase}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Call Attend Date</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{ serviceReportData?.srCallAttendDate | date :  "dd MMM yyyy"}}</div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Call Close Date</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{ serviceReportData?.srCallClosedDate | date :  "dd MMM yyyy"}}</div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Primary Observation</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{serviceReportData?.obervationDetails | observationbeforemaintenancefilter }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Actions Undertaken</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{serviceReportData?.srNaturalOfService | natureofjobfilter }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Status</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8">{{serviceReportData?.srCallStatus | uppercase }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Remarks</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8 wrap-div">{{serviceReportData?.srRemarks | uppercase }}</div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-lg-4"><label class="view-label">Minutes of Meeting</label><span class="float-right view-label">:</span></div>
+                        <div class="col-lg-8"><a target="_blank" href="{{basePath}}{{serviceReportData?.filePath}}">{{ serviceReportData?.orginalFileName | uppercase}}</a></div>
+                    </div>                    
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-8" style="padding: 20px;">
+                        <download-ctrl id="report-download-control" style="visibility:hidden;" (click)="onDownloadPdfClicked(serviceReportData?.alId);"></download-ctrl>
+                        <button type="button" class="btn btn-primary float-right mr-3" 
+                            (click)="print($event)"><i class="fas fa-print"></i> Download</button>
+                    </div>
+                </div>
+                <br/>
+            </div>
+        </div>
+    </div>
+  <!-- End of view model-->

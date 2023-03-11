@@ -1,0 +1,140 @@
+<form novalidate [formGroup]="addMaterialRequestDespatchForm" (ngSubmit)="onMaterialRequestDespatchCreate();">
+  <div class="matreq-form-body">        
+    <div class="row form-group" *ngIf=" ! isFormView" >
+        <!-- Material Request -->
+        <div class="col-lg-6">
+            <div><label>Material Request #:</label></div>
+            <ngx-select-dropdown *ngIf=" ! isFormView && isListNeeded"  (change)="onMaterialRequstSelectionChanged($event)"
+            formControlName="materialRequest" [multiple]="false"
+            [config]="materialRequestListConfig" [options]="materialRequestList" appendTo="body" 
+            [ngClass]="{ 'is-invalid': isDespatchSubmitAttempted && depatchForm.materialRequest.errors }"></ngx-select-dropdown>
+
+            <input *ngIf="! isFormView && ! isListNeeded" formControlName="materialRequest" class="form-control" type="text" 
+            [ngClass]="{ 'is-invalid': isDespatchSubmitAttempted && depatchForm.materialRequest.errors }"  disabled/>
+            
+            <div *ngIf="isDespatchSubmitAttempted && depatchForm.materialRequest.errors" style="color:red;">Please select a material request.</div>
+        </div>
+        <!-- Courier -->
+        <div class="col-lg-6">
+            <div><label>Courier:</label></div>
+            <ngx-select-dropdown *ngIf=" ! isFormView"  (change)="onCourierSelectionChanged($event)"
+            formControlName="courierService" [multiple]="false"
+            [config]="courierListConfig" [options]="courierList" appendTo="body" 
+            [ngClass]="{ 'is-invalid': isDespatchSubmitAttempted && depatchForm.courierService.errors }"></ngx-select-dropdown>
+
+            <div *ngIf="isDespatchSubmitAttempted && depatchForm.courierService.errors" style="color:red;">Please select a courier service.</div>
+        </div>
+        <!-- Courier Tracking -->
+        <div class="col-lg-6">
+            <div><label>Tracking #: </label></div>
+            <input *ngIf=" ! isFormView" class="form-control mandatory-field" formControlName="trackingId" type="text"
+            [ngClass]="{ 'is-invalid': isDespatchSubmitAttempted && depatchForm.trackingId.errors }"/>
+
+            <div *ngIf="isDespatchSubmitAttempted && depatchForm.trackingId.errors" style="color:red;">Please enter courier tracking #.</div>
+        </div>
+        <!-- Details -->
+        <div class="col-lg-12">
+            <div><label>Details: </label></div>
+            <textarea *ngIf=" ! isFormView" formControlName="details" class="form-control" type="text" maxlength="400"></textarea>
+        </div>
+        <!-- Remarks -->
+        <div class="col-lg-12">
+            <div><label>Remakrs: </label></div>
+            <textarea *ngIf=" ! isFormView" formControlName="remarks" class="form-control" type="text" maxlength="400"></textarea>
+        </div>
+    </div>
+    <div class="row form-group" *ngIf="isFormView" >
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <table class="form-data-view-table">
+                <tbody>
+                    <tr>
+                        <th>Despatch #</th>
+                        <td>{{materialRequestDespatchData.despatchNumber}}</td>
+                        <th>MR #</th>
+                        <td>{{materialRequestDespatchData.metrialRequestNumber}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Created By</th>
+                        <td>{{materialRequestDespatchData.employeeMinData.fullName}}</td>
+                        <th>Created On</th>
+                        <td>{{materialRequestDespatchData.createdAt | date :  "dd MMM yyyy" }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Tracking #</th>
+                        <td>{{materialRequestDespatchData.trackingId}}</td>
+                        <th>Status</th>
+                        <td>{{materialRequestDespatchData.statusInfo.status}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Details</th>
+                        <td colspan="3">{{materialRequestDespatchData.details}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Remarks</th>
+                        <td colspan="3">{{materialRequestDespatchData.remarks}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <!-- For list of items to be selected   -->
+        <div class="col-lg-12 table100" style="height: 245px;max-height:245px;min-height:245px;overflow-y: scroll;">
+            <table formArrayName="despatchItemsList" style="width:100%;overflow-y: visible !important;">
+
+                <thead>
+                    <tr class="table100-head">
+                        <th *ngIf=" ! isFormView"></th>
+                        <th>Category</th>
+                        <th>Item</th>
+                        <th>Quantity Shipped</th>
+                        <th>Remaining Quantity</th>
+                    </tr>
+                </thead>
+
+                <tbody *ngIf="isFormView" >
+                    <tr  *ngFor="let stockItem of materialRequestDespatchData.despatchedItems" >
+                        <td style="width: 35%;"><span>{{stockItem.materialStockInfo.materialCategory.materialCategory}}</span></td>
+                        <td style="width: 35%;"><span>{{stockItem.materialStockInfo.materialType}}</span></td>
+                        <td style="width: 10%;"><span>{{stockItem.despatchQuantity}}</span></td>
+                        <td style="width: 20%;"><span>{{stockItem.balanceItemToSend}}</span></td>
+                    </tr>
+                </tbody>
+
+                <tbody *ngIf=" ! isFormView" class="form-group" >
+                    <tr *ngFor="let despatchItem of getdespatchItemsControls(); index as i" [formGroupName]="i">
+                        <td style="width: 10%;">
+                            <a (click)="removeDespatchItem(i)"><i class="fas fa-trash" ></i></a>
+                        </td>
+                        <td style="width: 30%;">
+                            <input formControlName="materialCategory" class="form-control" type="text" disabled/>
+                        </td>
+                        <td style="width: 30%;">
+                            <input formControlName="materialType" class="form-control" type="text" disabled/>
+                        </td>
+                        <td style="width: 10%;">
+                            <input formControlName="despatchQuantity" class="form-control mandatory-field" (change)="updateRemainingQuantity(despatchItem)" type="number"/>
+                        </td>
+                        <td style="width: 20%;">
+                            <input formControlName="remainingQuantity" class="form-control" type="number" disabled/>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>  
+</div>
+
+  <div class="row form-group" *ngIf=" ! isFormView">
+    <div class="col-lg-12">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-danger" (click)="resetForm()" type="reset">Clear</button>     
+    </div>   
+  </div>
+</form> 

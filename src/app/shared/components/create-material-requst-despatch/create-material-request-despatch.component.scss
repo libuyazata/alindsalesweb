@@ -1,0 +1,43 @@
+@import "src/theme/table-theme.scss";
+
+form {
+    h4{
+        margin-top:15px;
+    }
+    label {
+        font-weight: 500;
+    }
+    .invalid-feedback {
+        top:65px;
+    }
+    .invalid-feedback.text-area-section {
+        top:86px;
+    }
+}
+
+
+.matreq-form-body {
+    z-index: 100;
+    
+    label {
+        width: 40%;
+    }
+    .details-main-data {
+        width: 60%;
+        font-size: 16px;
+        font-weight: bold;
+        color: #003481;
+    }
+    .col-lg-12 {
+        label {
+            width: 20% !important;
+        }
+        .details-main-data {
+            width: 80% !important;
+        }
+    }
+}
+.ngx-dropdown-container {
+    z-index:99999999;
+}
+

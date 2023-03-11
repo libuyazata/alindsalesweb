@@ -1,0 +1,13 @@
+@import "src/theme/table-theme.scss";
+
+@media screen and (max-width: 575px) {
+    table tbody tr td:nth-child(1):before {
+        content: "#";
+    }
+    table tbody tr td:nth-child(2):before {
+        content: "Category Name";
+    }
+    table tbody tr td:nth-child(3):before {
+        content: "Description";
+    }
+}

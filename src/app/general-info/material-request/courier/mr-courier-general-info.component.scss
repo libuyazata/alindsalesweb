@@ -1,0 +1,18 @@
+@import "src/theme/table-theme.scss";
+
+@media screen and (max-width: 575px) {
+    table tbody tr td:nth-child(1):before {
+        content: "#";
+    }
+    table tbody tr td:nth-child(2):before {
+        content: "Material Name";
+    }
+
+    table tbody tr td:nth-child(2):before {
+        content: "Number of Stocks";
+    }
+
+    table tbody tr td:nth-child(4):before {
+        content: "Description";
+    }
+}
