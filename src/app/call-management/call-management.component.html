@@ -132,7 +132,11 @@
                         <span class="pr-2">
                             <a class="link" title="Click to view"
                                 (click)="openCallMngtViewModal(item);"><i class="fas fa-eye"></i></a>         
-                        </span>   
+                        </span>  
+						<span class="pr-2" *ngIf="isAdminUser">
+                            <a class="link" title="Click to edit"
+                                (click)="openCallMngtEditModal(item);"><i class="fas fa-edit"></i></a>         
+                        </span>
 
                         <a class="link" title="Click to delete" *ngIf="item.uiStatus.toLowerCase() == 'new'" 
                                 (click)="deleteCallData(item);"><i class="far fa-trash-alt"></i></a>   
@@ -340,3 +344,109 @@
     </div>
 </div>
 <!-- End Of all Management Allot Modal Form -->
+<!-- Edit Modal Form -->
+  <div class="modal salary-info-model" id="editcallModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Call Management Edit</h5>
+            <button class="close" type="button" data-dismiss="modal" appModal  (click)="closecalleditEntryView();">&times;</button>
+          </div>
+          <form novalidate [formGroup]="callmanagementEditForm" (ngSubmit)="oncallEditDetailsSubmitted();">
+            <div class="modal-body">
+              <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label>Allot No.</label>
+                    <input type="text" formControlName="cdAllotNo" class="form-control" readonly />
+					<input type="hidden" formControlName="cdId" />
+                    <input type="hidden" formControlName="isActive" />
+                    <input type="hidden" formControlName="viewAlert" />
+                    <input type="hidden" formControlName="natureJobId" />
+				  </div>
+				  <div class="col-lg-12">
+                    <label>Allot Date</label>
+                    <input type="date" formControlName="cdAllotDate" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Board Division</label>
+                    <input type="text" formControlName="cdBoardDivision" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Contact No.</label>
+                    <input type="text" formControlName="cdContactNo" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Customer Name</label>
+                    <input type="text" formControlName="cdCustomerName" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Email</label>
+                    <input type="text" formControlName="cdEmail" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Gurantee Period</label>
+                    <input type="text" formControlName="cdGuranteePeriod" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Problem Details</label>
+                    <input type="text" formControlName="cdProblemDetails" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Relay Panel Details</label>
+                    <input type="text" formControlName="cdRelayPanelDetails" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Status</label>
+                    <input type="text" formControlName="cdStatus" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Created At</label>
+                    <input type="text" formControlName="createdAt" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Service RequestId</label>
+                    <input type="text" formControlName="serviceRequestId" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Site Details</label>
+                    <input type="text" formControlName="siteDetails" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Work Phone No.</label>
+                    <input type="text" formControlName="workPhNo" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Product Details</label>
+                    <input type="text" formControlName="productDetails" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Panel Id</label>
+                    <input type="text" formControlName="panelId" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Product Sl No</label>
+                    <input type="text" formControlName="productSlNo" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Remarks</label>
+                    <input type="text" formControlName="remarks" class="form-control" readonly />
+                  </div>
+				  <div class="col-lg-12">
+                    <label>Updated At</label>
+					<input type="date" formControlName="updatedAt" class="form-control"
+                      [ngClass]="{ 'is-invalid': iscalleditFormAttemptSubmit && editForm.updatedAt.errors }"/>
+                      <div *ngIf="iscalleditFormAttemptSubmit && editForm.updatedAt.errors" style="color:red;">Please enter the Update Date</div>
+                  </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-info" type="submit">Submit</button>
+              <button class="btn btn-danger" type="button" data-dismiss="modal" appModal (click)="closecalleditEntryView();">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+<!-- Edit Modal Form end-->
+

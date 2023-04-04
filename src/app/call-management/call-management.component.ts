@@ -6,6 +6,9 @@ import { BaseComponent } from '@app/core/component/base.component';
 import { CallManagementService } from '@app/call-management/call-management.service';
 import { ActivatedRoute } from '@angular/router';
 import { DownloadComponent } from '@app/shared/components/download-ctrl/download.component';
+import { AlertNotificationService } from '@app/shared/services/alertnotification.service';
+import { AuthenticationService } from '@app/core/authentication/authentication.service'
+
 // import { ExcelService } from '@app/shared/services/excel/excel.service';
 
 @Component({
@@ -26,12 +29,17 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   public callMngtSearchForm : FormGroup;
   public allotCallManagementForm : FormGroup;
   public isAllotCallManagementFormAttemptSubmit : Boolean;
-  
+  public callmanagementEditForm : FormGroup;
+  public iscalleditFormAttemptSubmit :Boolean = false;
+  public isAdminUser :Boolean = false;
+
   @ViewChild(DownloadComponent) downloadCtrl:DownloadComponent;
   
   constructor(private callManagementService : CallManagementService,
-              // private excelService:ExcelService, 
+              // private excelService:ExcelService,
+			  private alertService : AlertNotificationService,			  
               private route: ActivatedRoute,
+			  private authenticationService: AuthenticationService,
               private fb : FormBuilder) { 
     super(callManagementService);
     this.isAllotCallManagementFormAttemptSubmit = false;
@@ -75,9 +83,37 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 
     // Load the data.
     this.getCallManagementList(); 
-    this.intervalId = setInterval(() => {
+    /* this.intervalId = setInterval(() => {
       this.getCallManagementList(); 
-    }, 60000);
+    }, 60000); */
+	
+	this.callmanagementEditForm = new FormGroup({
+      cdId : new FormControl(''),
+      cdAllotNo : new FormControl(''),
+      cdAllotDate : new FormControl(''),
+      cdBoardDivision : new FormControl(''),
+      cdContactNo : new FormControl(''),
+      cdCustomerName : new FormControl(''),
+      cdEmail : new FormControl(''),
+      cdGuranteePeriod : new FormControl(''),
+      cdProblemDetails : new FormControl(''),
+      cdRelayPanelDetails : new FormControl(''),
+      cdStatus : new FormControl(''),
+      createdAt : new FormControl(''),
+      isActive : new FormControl(''),
+      serviceRequestId : new FormControl(''),
+      siteDetails : new FormControl(''),
+      workPhNo : new FormControl(''),
+      productDetails : new FormControl(''),
+      panelId : new FormControl(''),
+      productSlNo : new FormControl(''),
+      remarks : new FormControl(''),
+      viewAlert : new FormControl(''),
+      natureJobId : new FormControl(''),
+      updatedAt : new FormControl('',  Validators.required)
+    });
+	
+    this.isAdminUser = this.authenticationService.isAdminUser();
   }  
 
   ngOnDestroy() {
@@ -139,7 +175,79 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
     this.getCallMangementDetaildById(callData);    
     document.getElementById('callMngtViewModal').classList.toggle('d-block');
   }
-
+  
+  public openCallMngtEditModal(callData:any){
+    this.opencalleditEntryForm();
+	this.callmanagementEditForm.patchValue({"cdId" : callData.cdId});
+	this.callmanagementEditForm.patchValue({"isActive" : callData.isActive});
+	this.callmanagementEditForm.patchValue({"viewAlert" : callData.viewAlert});
+	this.callmanagementEditForm.patchValue({"natureJobId" : callData.natureJobId});
+	this.callmanagementEditForm.patchValue({"cdAllotNo" : callData.cdAllotNo});
+	this.callmanagementEditForm.patchValue({"cdAllotDate" : this.formatDate(callData.cdAllotDate)});
+	this.callmanagementEditForm.patchValue({"cdBoardDivision" : callData.cdBoardDivision});
+	this.callmanagementEditForm.patchValue({"cdContactNo" : callData.cdContactNo});
+	this.callmanagementEditForm.patchValue({"cdCustomerName" : callData.cdCustomerName});
+	this.callmanagementEditForm.patchValue({"cdEmail" : callData.cdEmail});
+	this.callmanagementEditForm.patchValue({"cdGuranteePeriod" : callData.cdGuranteePeriod});
+	this.callmanagementEditForm.patchValue({"cdProblemDetails" : callData.cdProblemDetails});
+	this.callmanagementEditForm.patchValue({"cdRelayPanelDetails" : callData.cdRelayPanelDetails});
+	this.callmanagementEditForm.patchValue({"cdStatus" : callData.cdStatus});
+	this.callmanagementEditForm.patchValue({"createdAt" : callData.createdAt});
+	this.callmanagementEditForm.patchValue({"serviceRequestId" : callData.serviceRequestId});
+	this.callmanagementEditForm.patchValue({"siteDetails" : callData.siteDetails});
+	this.callmanagementEditForm.patchValue({"workPhNo" : callData.workPhNo});
+	this.callmanagementEditForm.patchValue({"productDetails" : callData.productDetails});
+	this.callmanagementEditForm.patchValue({"productSlNo" : callData.productSlNo});
+	this.callmanagementEditForm.patchValue({"remarks" : callData.remarks});
+	this.callmanagementEditForm.patchValue({"updatedAt" : this.formatDate(callData.updatedAt)});
+  }
+  public formatDate(date:any) {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
+  }
+  public formatDatedmy(date:any) {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [day, month, year].join('-');
+  }
+  public oncallEditDetailsSubmitted(){
+    this.iscalleditFormAttemptSubmit = true;
+    if(this.callmanagementEditForm.valid) { 
+      let callEditValue = this.callmanagementEditForm.value;
+      //callEditValue.cdAllotDate="04-04-2023";
+      callEditValue.updatedAt=this.formatDatedmy(callEditValue.updatedAt);
+	  this.callManagementService.updateCallDetails(callEditValue).subscribe((resp:any)=>{
+		if(resp.status == "success") {
+         // this.alertService.showSaveStatus("Call Management details", true);
+          this.alertService.showSaveStatus("Call Management details", true);
+		  this.getCallManagementList();
+          this.closecalleditEntryView();
+        } else {
+          this.alertService.showSaveStatus("Call Management details", false);
+        }
+	  
+	  });
+	  }/* else{ 
+	  } */
+  }
+  public opencalleditEntryForm() {    
+	this.iscalleditFormAttemptSubmit = false;
+    document.getElementById('editcallModal').classList.toggle('d-block');
+  }
+  public closecalleditEntryView() {
+    this.callmanagementEditForm.reset();
+    this.iscalleditFormAttemptSubmit = false;
+    document.getElementById('editcallModal').classList.toggle('d-block');
+  } 
   public closeCallMngtViewModal(){
     this.callManagementViewData = null;
     document.getElementById('callMngtViewModal').classList.toggle('d-block');
@@ -258,4 +366,5 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
       }
     })
   }
+  get editForm() { return this.callmanagementEditForm.controls; }
 }

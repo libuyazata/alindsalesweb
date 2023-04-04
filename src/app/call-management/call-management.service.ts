@@ -39,4 +39,7 @@ export class CallManagementService extends BaseService {
   public saveGuranteePeriod(data:any): Observable<any>{
     return this.httpClient.post("call/updateGuranteePeriod",  { params: data });
   }
+  public updateCallDetails(updateCallDetails:any): Observable<any>{
+    return this.httpClient.post("call/updateCallDetails/", updateCallDetails);
+  }
 }
