@@ -18,6 +18,7 @@ export class CallManagementService extends BaseService {
   
   public getCallManagementList(data:any): Observable<any>{
     return this.httpClient.get("call/getCallDetails/",  { params: data });
+    //return this.httpClient.get("call/getCallDetailsTest/",  { params: data });
   }
 
   public allotEmployees(data:any): Observable<any>{

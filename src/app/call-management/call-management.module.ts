@@ -12,7 +12,7 @@ import { DataTableModule } from 'angular-6-datatable';
 //import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { DownloadReportModule } from '@app/shared/components/download-ctrl/download.module';
-
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   imports: [
@@ -27,6 +27,7 @@ import { DownloadReportModule } from '@app/shared/components/download-ctrl/downl
     //VirtualScrollModule,
     //AngularMultiSelectModule,
     NgMultiSelectDropDownModule,
+	NgxPaginationModule,
   ],
   declarations: [
     CallManagementComponent

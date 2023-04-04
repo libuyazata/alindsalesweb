@@ -32,6 +32,7 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   public callmanagementEditForm : FormGroup;
   public iscalleditFormAttemptSubmit :Boolean = false;
   public isAdminUser :Boolean = false;
+  public page: number = 0;
 
   @ViewChild(DownloadComponent) downloadCtrl:DownloadComponent;
   
@@ -321,7 +322,13 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
       this.callManagementList = resp["callDetails"]; // .filter((x:any) => x.cdId < 10);
     });
   }
-
+  public getCallManagementListPage(page: any) {
+	this.callManagementService.getCallManagementList(page).subscribe((resp:any)=>{      
+	  this.callManagementList = resp["callDetails"];
+      this.page = page;
+    });
+	
+  }
   protected getSearchParams(){
     let searchFilter = this.callMngtSearchForm.value;
     let callStatus = searchFilter.callManagementStatus == "" ? -1 : parseInt(searchFilter.callManagementStatus);
