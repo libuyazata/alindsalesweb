@@ -97,9 +97,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of mf.data" [ngClass]="{ 'unread': item.viewAlert == 1 }">
-                    <td>{{item.slNo}}</td>
-                    <td>{{item.createdAt | date :  "dd MMM yyyy" }}</td>
+<!--                 <tr *ngFor="let item of mf.data" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+ -->                <tr *ngFor="let item of mf.data | paginate: {itemsPerPage: 15,currentPage: page,totalItems: totalItems};index as i" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+<!--                     <td>{{item.slNo}}</td>
+ -->
+					<td>{{i+1}}</td>
+                    <td>{{item.createdAt }}</td>
                     <td class="text-truncate-cell" title="{{item.cdCustomerName | uppercase}}">
                         {{item.cdCustomerName | uppercase | slice:0:6 }}..
                     </td>
@@ -154,10 +157,11 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="10">
-                        <mfBootstrapPaginator [rowsOnPageSet]="[15,25,30,40,50]"></mfBootstrapPaginator>
-<!-- 						<pagination-controls (pageChange)="getcommunicationListPage(page = $event)"></pagination-controls>
- -->					</td>
+                    <td colspan="10" *ngIf="isPaginationVisible">
+<!--                         <mfBootstrapPaginator [rowsOnPageSet]="[15,25,30,40,50]"></mfBootstrapPaginator>
+ -->
+ 						<pagination-controls (pageChange)="getCallManagementListPage(page = $event)"></pagination-controls>
+					</td>
                 </tr>
                 </tfoot>
             </table>          

@@ -33,6 +33,9 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   public iscalleditFormAttemptSubmit :Boolean = false;
   public isAdminUser :Boolean = false;
   public page: number = 0;
+  public itemsPerPage: number;
+  public totalItems: number;
+  public isPaginationVisible : boolean = false;
 
   @ViewChild(DownloadComponent) downloadCtrl:DownloadComponent;
   
@@ -317,15 +320,27 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 
   protected getCallManagementList() {    
     let params = this.getSearchParams();
-    this.callManagementService.getCallManagementList(params).subscribe((resp:any)=>{
-      console.log("Received call details.");
-      this.callManagementList = resp["callDetails"]; // .filter((x:any) => x.cdId < 10);
-    });
+	this.callManagementService.getCallManagementList(params).subscribe((resp:any)=>{
+      //console.log("Received call details.");
+      //this.callManagementList = resp["callDetails"]; // .filter((x:any) => x.cdId < 10);
+	  this.callManagementList = resp["callDetails"]["callDetailModelList"];
+      const messageCount=resp["callDetails"].totalCount;
+	  this.totalItems = messageCount;
+	  if(this.totalItems > 0){
+		this.isPaginationVisible = true;
+	  }
+	  });
   }
   public getCallManagementListPage(page: any) {
 	this.callManagementService.getCallManagementList(page).subscribe((resp:any)=>{      
-	  this.callManagementList = resp["callDetails"];
-      this.page = page;
+	  //this.callManagementList = resp["callDetails"];
+	  this.callManagementList = resp["callDetails"]["callDetailModelList"];
+      const itemsCount=resp["callDetails"].totalCount;
+	  this.totalItems = itemsCount;
+	  if(this.totalItems > 0){
+		this.isPaginationVisible = true;
+	  }
+	  this.page = page;
     });
 	
   }
@@ -342,7 +357,9 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
       "searchKeyWord" : searchFilter.searchKeyWord == null ? "" : searchFilter.searchKeyWord,
       "callStatus" : callStatus,
       "gurenteePeriod" : searchFilter.gurenteePeriod == null ? "all" : searchFilter.gurenteePeriod,
-    };
+      "pageNo" : 1,
+      "pageCount" : 15,
+	};
     return params;
   }
 
