@@ -81,9 +81,9 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
         this.callMngtSearchForm.patchValue({"callManagementStatus" : this.callStatusParam});
       }
     });
-    this.callManagementService.getEmployeeList( { "departmentId": -1, "designationId" : -1, "searchKeyWord" : ""}).subscribe((resp:any)=>{
+    /* this.callManagementService.getEmployeeList( { "departmentId": -1, "designationId" : -1, "searchKeyWord" : ""}).subscribe((resp:any)=>{
       this.employeeList = resp.employeeList;
-    });    
+    });  */   
 
     // Load the data.
     this.getCallManagementList(); 
@@ -319,7 +319,7 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   }
 
   protected getCallManagementList() {    
-    let params = this.getSearchParams();
+	let params = this.getSearchParams();
 	this.callManagementService.getCallManagementList(params).subscribe((resp:any)=>{
       //console.log("Received call details.");
       //this.callManagementList = resp["callDetails"]; // .filter((x:any) => x.cdId < 10);
@@ -332,7 +332,9 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 	  });
   }
   public getCallManagementListPage(page: any) {
-	this.callManagementService.getCallManagementList(page).subscribe((resp:any)=>{      
+	let params = this.getSearchParams();
+	params.pageNo = page;
+	this.callManagementService.getCallManagementList(params).subscribe((resp:any)=>{      
 	  //this.callManagementList = resp["callDetails"];
 	  this.callManagementList = resp["callDetails"]["callDetailModelList"];
       const itemsCount=resp["callDetails"].totalCount;
@@ -350,16 +352,15 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
     if(isNaN(callStatus)){
       callStatus = -1;
     }
-    
-    let params = { 
-      "dateFrom" : searchFilter.dateFrom == null ? "" : searchFilter.dateFrom,
-      "dateTo" : searchFilter.dateTo == null ? "" : searchFilter.dateTo,
-      "searchKeyWord" : searchFilter.searchKeyWord == null ? "" : searchFilter.searchKeyWord,
-      "callStatus" : callStatus,
-      "gurenteePeriod" : searchFilter.gurenteePeriod == null ? "all" : searchFilter.gurenteePeriod,
-      "pageNo" : 1,
-      "pageCount" : 15,
-	};
+	let params = { 
+		  "dateFrom" : searchFilter.dateFrom == null ? "" : searchFilter.dateFrom,
+		  "dateTo" : searchFilter.dateTo == null ? "" : searchFilter.dateTo,
+		  "searchKeyWord" : searchFilter.searchKeyWord == null ? "" : searchFilter.searchKeyWord,
+		  "callStatus" : callStatus,
+		  "gurenteePeriod" : searchFilter.gurenteePeriod == null ? "all" : searchFilter.gurenteePeriod,
+		  "pageNo" : 1,
+		  "pageCount" : 15,
+		};
     return params;
   }
 

@@ -18,8 +18,11 @@ export class CallManagementService extends BaseService {
   
   public getCallManagementList(data:any): Observable<any>{
     //return this.httpClient.get("call/getCallDetails/",  { params: data });
-    return this.httpClient.get("call/getCallDetailsTest/",  { params: data });
+    return this.httpClient.get("call/getCallDetailsTest",  { params: data });
   }
+  /* public getCallManagementList(dateFrom:any,dateTo:any,searchKeyWord:any,callStatus:any,gurenteePeriod:any,pageNo:any,pageCount:any): Observable<any>{
+    return this.httpClient.get("call/getCallDetailsTest/"+dateFrom+"/"+dateTo+"/"+searchKeyWord+"/"+callStatus+"/"+gurenteePeriod+"/"+pageNo+"/"+pageCount);
+  } */
 
   public allotEmployees(data:any): Observable<any>{
     return this.httpClient.post("call/saveOrUpdateAllottedEmployees",  { params: data });

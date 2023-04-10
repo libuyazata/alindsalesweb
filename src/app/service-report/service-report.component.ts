@@ -49,7 +49,7 @@ export class ServiceReportComponent extends BaseComponent implements OnInit {
     this.serviceReportSearchForm.patchValue({"gurenteePeriod" : "all"});
     this.serviceReportSearchForm.patchValue({"serviceReportStatus" : "all"});
         
-    this.getEmployees();
+    //this.getEmployees();
 
     // Load the data.
     this.getServiceReportList();
