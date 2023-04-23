@@ -32,7 +32,7 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   public callmanagementEditForm : FormGroup;
   public iscalleditFormAttemptSubmit :Boolean = false;
   public isAdminUser :Boolean = false;
-  public page: number = 0;
+  public page: number = 1;
   public itemsPerPage: number;
   public totalItems: number;
   public isPaginationVisible : boolean = false;
@@ -127,7 +127,9 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   }
 
   public onCallManagementSearched(){   
-    this.getCallManagementList();    
+    //this.getCallManagementList();    
+    this.page=1;
+	this.getCallManagementListSearched();    
   }
 
   // Convenience getter for easy access of form fields.
@@ -321,6 +323,19 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   protected getCallManagementList() {    
 	let params = this.getSearchParams();
 	this.callManagementService.getCallManagementList(params).subscribe((resp:any)=>{
+      //console.log("Received call details.");
+      //this.callManagementList = resp["callDetails"]; // .filter((x:any) => x.cdId < 10);
+	  this.callManagementList = resp["callDetails"]["callDetailModelList"];
+      const messageCount=resp["callDetails"].totalCount;
+	  this.totalItems = messageCount;
+	  if(this.totalItems > 0){
+		this.isPaginationVisible = true;
+	  }
+	  });
+  }
+  protected getCallManagementListSearched() {    
+	let params = this.getSearchParams();
+	this.callManagementService.getCallManagementListSearched(params).subscribe((resp:any)=>{
       //console.log("Received call details.");
       //this.callManagementList = resp["callDetails"]; // .filter((x:any) => x.cdId < 10);
 	  this.callManagementList = resp["callDetails"]["callDetailModelList"];
