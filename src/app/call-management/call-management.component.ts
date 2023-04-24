@@ -30,6 +30,7 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   public allotCallManagementForm : FormGroup;
   public isAllotCallManagementFormAttemptSubmit : Boolean;
   public callmanagementEditForm : FormGroup;
+  public iscallsearchFormAttemptSubmit :Boolean = false;
   public iscalleditFormAttemptSubmit :Boolean = false;
   public isAdminUser :Boolean = false;
   public page: number = 1;
@@ -56,7 +57,7 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
       searchKeyWord : new FormControl(''),
       dateFrom : new FormControl(''),
       dateTo : new FormControl(''),
-      gurenteePeriod : new FormControl('')
+      gurenteePeriod : new FormControl('',Validators.required)
     });
 
     this.dropdownSettings = {
@@ -90,7 +91,13 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
     /* this.intervalId = setInterval(() => {
       this.getCallManagementList(); 
     }, 60000); */
-	
+	/* this.callMngtSearchForm = new FormGroup({
+	callManagementStatus : new FormControl(''),
+	gurenteePeriod : new FormControl(''),
+	dateFrom : new FormControl(''),
+	dateTo : new FormControl(''),
+	searchKeyWord : new FormControl('',Validators.required)
+	}); */
 	this.callmanagementEditForm = new FormGroup({
       cdId : new FormControl(''),
       cdAllotNo : new FormControl(''),
@@ -128,10 +135,10 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 
   public onCallManagementSearched(){   
     //this.getCallManagementList();    
-    this.page=1;
-	this.getCallManagementListSearched();    
+    //this.iscallsearchFormAttemptSubmit = true;
+	this.page=1;
+	this.getCallManagementListSearched(); 
   }
-
   // Convenience getter for easy access of form fields.
   get allotCallMngtForm() { return this.allotCallManagementForm.controls; }
 
@@ -333,6 +340,27 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 	  }
 	  });
   }
+  onresetSearch() {    
+	let params = { 
+		  "dateFrom" : "",
+		  "dateTo" : "",
+		  "searchKeyWord" : "",
+		  "callStatus" : -1,
+		  "gurenteePeriod" : "all",
+		  "pageNo" : 1,
+		  "pageCount" : 15,
+		};
+	this.callManagementService.getCallManagementListSearched(params).subscribe((resp:any)=>{
+      //console.log("Received call details.");
+      //this.callManagementList = resp["callDetails"]; // .filter((x:any) => x.cdId < 10);
+	  this.callManagementList = resp["callDetails"]["callDetailModelList"];
+      const messageCount=resp["callDetails"].totalCount;
+	  this.totalItems = messageCount;
+	  if(this.totalItems > 0){
+		this.isPaginationVisible = true;
+	  }
+	  });
+  }
   protected getCallManagementListSearched() {    
 	let params = this.getSearchParams();
 	this.callManagementService.getCallManagementListSearched(params).subscribe((resp:any)=>{
@@ -407,4 +435,5 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
     })
   }
   get editForm() { return this.callmanagementEditForm.controls; }
+  get searchForm() { return this.callMngtSearchForm.controls; }
 }

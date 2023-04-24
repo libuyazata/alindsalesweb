@@ -45,11 +45,16 @@
                     <div class="col-lg-3">
                         <div class="search-label-container"><label>Search</label></div>
                         <input formControlName="searchKeyWord" class="form-control" />  
-                    </div>
+					</div>
+					<!-- <div class="col-lg-3">
+                        <div class="search-label-container"><label>Search</label></div>
+                        <input formControlName="searchKeyWord" class="form-control" [ngClass]="{ 'is-invalid': iscallsearchFormAttemptSubmit && searchForm.searchKeyWord.errors }"/>  
+                      <div *ngIf="iscallsearchFormAttemptSubmit && searchForm.searchKeyWord.errors" style="color:red;">Please enter the Search KeyWord</div>
+					</div> -->
                     <div class="col-lg-2 pt-4">                    
                         <span class="float-right">
                             <button class="btn btn-info" type="submit">Search</button>  
-                            <button class="btn btn-danger" type="reset">Reset</button>
+                            <button class="btn btn-danger" type="reset" (click)="onresetSearch();">Reset</button>
                         </span>
                     </div>
                 </div>
