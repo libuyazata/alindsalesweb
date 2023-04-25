@@ -66,7 +66,7 @@
   <div class="row">
     <div class="col-lg-12">
         <div class="table-responsive-1">
-           <table class="table" [mfData]="callManagementList" #mf="mfDataTable" [mfRowsOnPage]="15">
+           <table class="table" [mfData]="callManagementList" #mf="mfDataTable" [mfRowsOnPage]="15" *ngIf="tableVisible">
                 <thead>
                 <tr>
                     <th>
@@ -169,7 +169,112 @@
 					</td>
                 </tr>
                 </tfoot>
-            </table>          
+            </table>
+
+			 <table class="table" [mfData]="callManagementList" #mf="mfDataTable" *ngIf="searchtableVisible">
+                <thead>
+                <tr>
+                    <th>
+                        <mfDefaultSorter by="slNo">Sl No</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="createdAt">Register Date</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="cdCustomerName">Customer Name</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="cdContactNo">Customer Contact</mfDefaultSorter>
+                    </th>                     
+                    <th>
+                        <mfDefaultSorter by="siteDetails">Site Details</mfDefaultSorter>
+                    </th>                                          
+                    <th>
+                        <mfDefaultSorter by="cdRelayPanelDetails">Product Name</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="serviceRequestId">Service Request Id</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="cdStatus">Status</mfDefaultSorter>
+                    </th>
+                    <!-- <th>
+                        <mfDefaultSorter by="cdGuranteePeriod">Gurantee</mfDefaultSorter>
+                    </th> -->
+                    <th width="20%">
+                        Action
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+<!--                 <tr *ngFor="let item of mf.data" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+ -->                <tr *ngFor="let item of mf.data;index as i" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+<!--                     <td>{{item.slNo}}</td>
+ -->
+					<td>{{(page-1)*15+(i+1)}}</td>
+                    <td>{{item.createdAt }}</td>
+                    <td class="text-truncate-cell" title="{{item.cdCustomerName | uppercase}}">
+                        {{item.cdCustomerName | uppercase | slice:0:6 }}..
+                    </td>
+                    <td>{{item.cdContactNo | uppercase}}</td>
+                    <td class="text-truncate-cell" title="{{item.siteDetails | uppercase}}">                        
+                        {{item.siteDetails | uppercase | slice:0:6}}..                       
+                    </td>
+                    <td class="text-truncate-cell" title="{{item.cdRelayPanelDetails | uppercase}}">{{item.cdRelayPanelDetails | uppercase | slice:0:6}}..</td>
+                    <td>{{item.serviceRequestId | uppercase}}</td> 
+                    <td>{{item.uiStatus | uppercase}}</td>
+                    <!-- <td>
+                        <div class="text-center">
+                            <input type="checkbox" [checked]="item.cdGuranteePeriod?.toLowerCase() == 'yes'" 
+                            *ngIf="item.cdStatus.toLowerCase() == 'new' || item.cdStatus.toLowerCase() == 'on going' || item.cdStatus.toLowerCase() == 'not completed'" 
+                            (click)="onGuranteePeriodClicked($event, item);" class="form-control gurantee-period-ctrl"/>
+                            <span *ngIf="!(item.cdStatus.toLowerCase() == 'new' || item.cdStatus.toLowerCase() == 'on going' || item.cdStatus.toLowerCase() == 'not completed')">
+                                {{ item.cdGuranteePeriod | uppercase}}
+                            </span>
+                        </div>                        
+                    </td> -->
+                    <td class="text-center action-cell">
+                        <span class="pr-2">
+                            <a class="link" *ngIf="item.uiStatus.toLowerCase() == 'new' || item.uiStatus.toLowerCase() == 'not completed'" title="Click to allot employees"
+                            (click)="allotCallManagementDetails(item);"><i class="fas fa-user-plus"></i></a>
+
+                            <a class="link disabled-link" *ngIf="item.uiStatus.toLowerCase() != 'new' && item.uiStatus.toLowerCase() != 'not completed'" title="Disabled">
+                                <i class="fas fa-user-plus"></i>
+                            </a>
+                        </span>
+                        <span class="pr-2">
+                            <a class="link" title="Click to view"
+                                (click)="openCallMngtViewModal(item);"><i class="fas fa-eye"></i></a>         
+                        </span>  
+						<span class="pr-2" *ngIf="isAdminUser">
+                            <a class="link" title="Click to edit"
+                                (click)="openCallMngtEditModal(item);"><i class="fas fa-edit"></i></a>         
+                        </span>
+
+                        <a class="link" title="Click to delete" *ngIf="item.uiStatus.toLowerCase() == 'new'" 
+                                (click)="deleteCallData(item);"><i class="far fa-trash-alt"></i></a>   
+
+                        <a class="link disabled-link" *ngIf="item.uiStatus.toLowerCase() != 'new'" title="Disabled">
+                            <i class="far fa-trash-alt"></i>
+                        </a>         
+                    </td>
+                </tr>
+                <tr *ngIf="!callManagementList">
+                    <td colspan="10">
+                        <div class="text-center">Loading...</div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="10" *ngIf="isPaginationVisible">
+<!--                         <mfBootstrapPaginator [rowsOnPageSet]="[15,25,30,40,50]"></mfBootstrapPaginator>
+ -->
+<!--  						<pagination-controls (pageChange)="getCallManagementListPage(page = $event)"></pagination-controls>
+ -->					</td>
+                </tr>
+                </tfoot>
+            </table> 		
       
         </div>
     </div>

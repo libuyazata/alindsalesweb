@@ -37,6 +37,8 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   public itemsPerPage: number;
   public totalItems: number;
   public isPaginationVisible : boolean = false;
+  public tableVisible : boolean = true;
+  public searchtableVisible : boolean = false;
 
   @ViewChild(DownloadComponent) downloadCtrl:DownloadComponent;
   
@@ -136,8 +138,19 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   public onCallManagementSearched(){   
     //this.getCallManagementList();    
     //this.iscallsearchFormAttemptSubmit = true;
-	this.page=1;
-	this.getCallManagementListSearched(); 
+	let searchFilter = this.callMngtSearchForm.value;
+	if(searchFilter.dateFrom == "" && searchFilter.dateTo == "" && searchFilter.searchKeyWord == "" ){
+		this.tableVisible = true;
+		this.searchtableVisible = false;
+		this.page=1;
+		this.getCallManagementList();
+	}
+    else{
+		this.tableVisible = false;
+		this.searchtableVisible = true;
+		this.page=1;
+		this.getCallManagementListSearched();
+	}
   }
   // Convenience getter for easy access of form fields.
   get allotCallMngtForm() { return this.allotCallManagementForm.controls; }
@@ -341,6 +354,8 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 	  });
   }
   onresetSearch() {    
+	this.tableVisible = true;
+	this.searchtableVisible = false;
 	let params = { 
 		  "dateFrom" : "",
 		  "dateTo" : "",
@@ -362,7 +377,7 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 	  });
   }
   protected getCallManagementListSearched() {    
-	let params = this.getSearchParams();
+	let params = this.getSearchParamsSearch();
 	this.callManagementService.getCallManagementListSearched(params).subscribe((resp:any)=>{
       //console.log("Received call details.");
       //this.callManagementList = resp["callDetails"]; // .filter((x:any) => x.cdId < 10);
@@ -403,6 +418,21 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 		  "gurenteePeriod" : searchFilter.gurenteePeriod == null ? "all" : searchFilter.gurenteePeriod,
 		  "pageNo" : 1,
 		  "pageCount" : 15,
+		};
+    return params;
+  }
+  protected getSearchParamsSearch(){
+    let searchFilter = this.callMngtSearchForm.value;
+    let callStatus = searchFilter.callManagementStatus == "" ? -1 : parseInt(searchFilter.callManagementStatus);
+    if(isNaN(callStatus)){
+      callStatus = -1;
+    }
+	let params = { 
+		  "dateFrom" : searchFilter.dateFrom == null ? "" : searchFilter.dateFrom,
+		  "dateTo" : searchFilter.dateTo == null ? "" : searchFilter.dateTo,
+		  "searchKeyWord" : searchFilter.searchKeyWord == null ? "" : searchFilter.searchKeyWord,
+		  "callStatus" : callStatus,
+		  "gurenteePeriod" : searchFilter.gurenteePeriod == null ? "all" : searchFilter.gurenteePeriod,
 		};
     return params;
   }
