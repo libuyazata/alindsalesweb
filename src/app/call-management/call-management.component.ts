@@ -142,7 +142,7 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 	if(searchFilter.dateFrom == "" && searchFilter.dateTo == "" && searchFilter.searchKeyWord == "" ){
 		this.tableVisible = true;
 		this.searchtableVisible = false;
-		this.page=1;
+		//this.page=1;
 		this.getCallManagementList();
 	}
     else{
