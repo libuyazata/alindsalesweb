@@ -10,7 +10,7 @@ const routes: Routes = [
       path: 'service-report', 
       component: ServiceReportComponent, 
       loadChildren: './service-report.module#ServiceReportModule',
-      data: { title: extract('department') } 
+      data: { title: extract('Service Report') } 
     }
   ])  
 ];

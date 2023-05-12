@@ -21,7 +21,12 @@ export class ServiceReportComponent extends BaseComponent implements OnInit {
   public serviceReportSearchForm : FormGroup;
   public serviceReportSubmitForm : FormGroup; // Gurantee period submit
   public isServiceReportSubmitFormSubmit = false;  
-
+  public isPaginationVisible : boolean = false;
+  public page: number = 1;
+  public itemsPerPage: number;
+  public totalItems: number;
+  public tableVisible : boolean = true;
+  public searchtableVisible : boolean = false;
   @ViewChild(DownloadComponent) downloadCtrl:DownloadComponent;
 
   constructor(private serviceReportService : ServiceReportService) { 
@@ -53,9 +58,9 @@ export class ServiceReportComponent extends BaseComponent implements OnInit {
 
     // Load the data.
     this.getServiceReportList();
-    this.intervalId = setInterval(() => {
+    /* this.intervalId = setInterval(() => {
       this.getServiceReportList(); 
-    }, 60000);
+    }, 60000); */
   }
 
   ngOnDestroy() {
@@ -64,10 +69,44 @@ export class ServiceReportComponent extends BaseComponent implements OnInit {
     }
   }
 
-  public onServiceReportSearched(){   
+  /* public onServiceReportSearched(){   
     this.getServiceReportList();    
-  }
-
+  } */
+	 public onServiceReportSearched(){   
+		//this.getCallManagementList();    
+		//this.iscallsearchFormAttemptSubmit = true;
+		let searchFilter = this.serviceReportSearchForm.value;
+		if(searchFilter.dateFrom == "" && searchFilter.dateTo == "" && searchFilter.searchKeyWord == "" && searchFilter.employeeId == "-1" && searchFilter.gurenteePeriod == "all" && searchFilter.statusId == "-1" ){
+			this.tableVisible = true;
+			this.searchtableVisible = false;
+			//this.page=1;
+			this.getServiceReportList();
+		}
+		else{
+			this.tableVisible = false;
+			this.searchtableVisible = true;
+			this.page=1;
+			this.getServiceReportListSearched();
+		}
+	  }
+	   protected getServiceReportListSearched() {    
+		let params = this.getSearchParamsSearch();
+		this.serviceReportService.getServiceReportListSearched(params).subscribe((resp:any)=>{
+		  //console.log("Received call details.");
+		  //this.callManagementList = resp["callDetails"]; // .filter((x:any) => x.cdId < 10);
+		  this.serviceReportList = resp["serviceReports"]["serviceReportModels"];
+		  const itemsCount=resp["serviceReports"].totalCount;
+		  this.totalItems = itemsCount;
+		  if(this.totalItems > 0){
+			this.isPaginationVisible = true;
+		  }
+		  });
+	  }
+	onresetSearch() {    
+	this.tableVisible = true;
+	this.searchtableVisible = false;
+	this.getServiceReportList();
+	}
   // Convenience getter for easy access to service report form fields.
   get serviceReportSrchForm() { return this.serviceReportSearchForm.controls; }
 
@@ -152,17 +191,55 @@ export class ServiceReportComponent extends BaseComponent implements OnInit {
        "dateTo" : searchFilter.dateTo == null ? "" : searchFilter.dateTo,
        "searchKeyWord" : searchFilter.searchKeyWord == null ? "" : searchFilter.searchKeyWord,
        "gurenteePeriod" : searchFilter.gurenteePeriod == null ? "all" : searchFilter.gurenteePeriod,
-    }
+       "pageNo" : 1,
+	   "pageCount" : 15,
+	}
+    return params;
+  }
+  protected getSearchParamsSearch(){
+    let searchFilter = this.serviceReportSearchForm.value;
+    let params = {
+       "statusId" : searchFilter.statusId == null ? "-1" : searchFilter.statusId,
+       "employeeId" : searchFilter.employeeId == null ? "-1" : searchFilter.employeeId,
+       "dateFrom" : searchFilter.dateFrom == null ? "" : searchFilter.dateFrom,
+       "dateTo" : searchFilter.dateTo == null ? "" : searchFilter.dateTo,
+       "searchKeyWord" : searchFilter.searchKeyWord == null ? "" : searchFilter.searchKeyWord,
+       "gurenteePeriod" : searchFilter.gurenteePeriod == null ? "all" : searchFilter.gurenteePeriod,
+	}
     return params;
   }
 
-  protected getServiceReportList() {
+  /* protected getServiceReportList() {
     let params = this.getSearchParams();
     this.serviceReportService.searchServiceReport(params).subscribe((resp:any)=>{      
       this.serviceReportList = resp["serviceReports"];
     });
+  }  */
+  protected getServiceReportList() {
+	let params = this.getSearchParams();
+    this.serviceReportService.searchServiceReport(params).subscribe((resp:any)=>{      
+      this.serviceReportList = resp["serviceReports"]["serviceReportModels"];
+      const itemsCount=resp["serviceReports"].totalCount;
+	  this.totalItems = itemsCount;
+	  if(this.totalItems > 0){
+		this.isPaginationVisible = true;
+	  }
+	});
   }  
-
+  public getServiceReportListPage(page: any) {
+	let params = this.getSearchParams();
+	params.pageNo = page;
+	this.serviceReportService.searchServiceReport(params).subscribe((resp:any)=>{      
+      this.serviceReportList = resp["serviceReports"]["serviceReportModels"];
+      const itemsCount=resp["serviceReports"].totalCount;
+	  this.totalItems = itemsCount;
+	  if(this.totalItems > 0){
+		this.isPaginationVisible = true;
+	  }
+	  this.page = page;
+    });
+	
+  }
   protected getEmployees() {
     let params = { "departmentId": -1, "designationId" : -1, "searchKeyWord" : ""};
     this.serviceReportService.getEmployeeList(params).subscribe((resp:any)=>{

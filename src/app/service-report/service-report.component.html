@@ -63,7 +63,7 @@
                 <div class="col-lg-2 pt-4">                    
                     <span class="float-right">
                         <button class="btn btn-info" type="submit">Search</button>  
-                        <button class="btn btn-danger" type="reset">Reset</button>
+                        <button class="btn btn-danger" type="reset" (click)="onresetSearch();">Reset</button>
                     </span>
                 </div>
                 <!--<div class="col-lg-9 pt-4">
@@ -96,7 +96,7 @@
             sr_cd_id: 368
             updatedAt: 1570158047000
            -->
-           <table class="table" [mfData]="serviceReportList" #mf="mfDataTable" [mfRowsOnPage]="15">
+           <table class="table" [mfData]="serviceReportList" #mf="mfDataTable" [mfRowsOnPage]="15" *ngIf="tableVisible">
                 <thead>
                 <tr>
                      <th>
@@ -132,17 +132,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of mf.data" [ngClass]="{ 'unread': item.viewAlert == 1 }">
-                    <td>{{item.slNo }}</td>
+				<tr *ngFor="let item of mf.data | paginate: {itemsPerPage: 15,currentPage: page,totalItems: totalItems};index as i" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+<!-- 				<tr *ngFor="let item of mf.data" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+ -->                
+					<!-- <td>{{item.slNo }}</td> -->
+					<td>{{(page-1)*15+(i+1)}}</td>
                     <td>{{item.createdAt | date :  "dd MMM yyyy" }}</td>
                     <td>{{item.alAllotNo | uppercase}}</td>  
-                    <td>{{item.callDetail.cdAllotDate | date :  "dd MMM yyyy"}}</td>  
+                    <td>{{item.cdAllotDate | date :  "dd MMM yyyy"}}</td>  
                     <td>{{item.srCallAttendDate | date :  "dd MMM yyyy" }}</td>
-                    <td>{{item.callDetail.serviceRequestId | uppercase }}</td>
-                    <td class="text-truncate-cell" title="{{item.callDetail.siteDetails | uppercase}}">
-                        {{item.callDetail.siteDetails | uppercase}}
+                    <td>{{item.srId}}</td>
+                    <td class="text-truncate-cell" title="{{item.siteDetails | uppercase}}">
+                        {{item.siteDetails | uppercase}}
                     </td>   
-                    <td title="Employee Code: {{item.employee.empCode}}">{{item.employee.fullName | uppercase }}</td>
+                    <td title="Employee Code: {{item.empCode}}">{{item.fullName | uppercase }}</td>
                     <td>{{item.srCallStatus | uppercase }}</td>
                     <td>
                         <a class="link mr-2" *ngIf="item?.reviewStatus == 1"
@@ -160,12 +163,86 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="7">
-                        <mfBootstrapPaginator [rowsOnPageSet]="[15,20,30,40,50]"></mfBootstrapPaginator>
-                    </td>
+                    <td colspan="7" *ngIf="isPaginationVisible">
+                        <!-- <mfBootstrapPaginator [rowsOnPageSet]="[15,20,30,40,50]"></mfBootstrapPaginator> -->
+                    <pagination-controls (pageChange)="getServiceReportListPage(page = $event)"></pagination-controls>
+					</td>
                 </tr>
                 </tfoot>
-            </table>          
+            </table> 
+			<table class="table" [mfData]="serviceReportList" #mf="mfDataTable" [mfRowsOnPage]="15" *ngIf="searchtableVisible">
+                <thead>
+                <tr>
+                     <th>
+                        <mfDefaultSorter by="slNo">Sl No</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="createdAt">Call Register Date</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="alAllotNo">Allot No</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="callDetail.cdAllotDate">Allot Date</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="srCallAttendDate">Call Attend Date</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="callDetail.serviceRequestId">Service Request Id</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="callDetail.siteDetails">Site Details</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="employee.firstName">Employee Name</mfDefaultSorter>
+                    </th>
+                    <th>
+                        <mfDefaultSorter by="srCallStatus">Status</mfDefaultSorter>
+                    </th>                     
+                    <th>
+                        Action
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+				<tr *ngFor="let item of mf.data | paginate: {itemsPerPage: 15,currentPage: page,totalItems: totalItems};index as i" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+<!-- 				<tr *ngFor="let item of mf.data" [ngClass]="{ 'unread': item.viewAlert == 1 }">
+ -->                
+					<td>{{item.slNo }}</td>
+                    <td>{{item.createdAt | date :  "dd MMM yyyy" }}</td>
+                    <td>{{item.alAllotNo | uppercase}}</td>  
+                    <td>{{item.cdAllotDate | date :  "dd MMM yyyy"}}</td>  
+                    <td>{{item.srCallAttendDate | date :  "dd MMM yyyy" }}</td>
+                    <td>{{item.srId}}</td>
+                    <td class="text-truncate-cell" title="{{item.siteDetails | uppercase}}">
+                        {{item.siteDetails | uppercase}}
+                    </td>   
+                    <td title="Employee Code: {{item.empCode}}">{{item.fullName | uppercase }}</td>
+                    <td>{{item.srCallStatus | uppercase }}</td>
+                    <td>
+                        <a class="link mr-2" *ngIf="item?.reviewStatus == 1"
+                            (click)="editServiceReport(item);"><i class="far fa-edit"></i></a>
+                            
+                        <a class="link disabled-link mr-2" *ngIf="item?.reviewStatus == 0"><i class="far fa-edit"></i></a>
+                        <a class="link" (click)="openServiceReportViewModal(item);"><i class="fas fa-eye"></i></a>
+                    </td>
+                </tr>
+                <tr *ngIf="!serviceReportList">
+                    <td colspan="10">
+                        <div class="text-center">Loading...</div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="7" *ngIf="isPaginationVisible">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[15,20,30,40,50]"></mfBootstrapPaginator>
+					</td>
+                </tr>
+                </tfoot>
+            </table> 
+            			
       </div>
   </div>
 </div>
@@ -180,7 +257,7 @@
                 <div class="modal-body" id="serviceReportPrintSection">
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Employee Name<span>:</span></label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label>{{ serviceReportViewData?.employee.firstName | uppercase}} {{ serviceReportViewData?.employee.lastName | uppercase}}</label></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.firstName | uppercase}} {{ serviceReportViewData?.lastName | uppercase}}</label></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Call Attend Date</label><span class="float-right view-label">:</span></div>
@@ -193,24 +270,24 @@
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Customer Details</label><span class="float-right view-label">:</span></div>
                         <div class="col-lg-8">
-                            <label>{{ serviceReportViewData?.callDetail.cdCustomerName | uppercase}}</label>
+                            <label>{{ serviceReportViewData?.cdCustomerName | uppercase}}</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Contact No</label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label>{{  serviceReportViewData?.callDetail.cdContactNo | uppercase}}</label></div>
+                        <div class="col-lg-8"><label>{{  serviceReportViewData?.cdContactNo | uppercase}}</label></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Allot No</label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.cdAllotNo | uppercase}}</label></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.cdAllotNo | uppercase}}</label></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Service Request Id</label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.serviceRequestId | uppercase}}</label></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.srId}}</label></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Site Details</label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.siteDetails | uppercase}}</label></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.siteDetails | uppercase}}</label></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Serial No</label><span class="float-right view-label">:</span></div>
@@ -218,19 +295,19 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Gurantee Period</label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.cdGuranteePeriod | uppercase}}</label></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.guranteePeriod | uppercase}}</label></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Relay/Panel Details</label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.cdRelayPanelDetails | uppercase}}</label></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.relayPanelDetails | uppercase}}</label></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Nature of Job</label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.natureOfJobs.jobNature | uppercase}}</label></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.jobNature | uppercase}}</label></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Reported Problems</label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label>{{ serviceReportViewData?.callDetail.cdProblemDetails | uppercase}}</label></div>
+                        <div class="col-lg-8"><label>{{ serviceReportViewData?.problemDetails | uppercase}}</label></div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Actions Undertaken</label><span class="float-right view-label">:</span></div>
@@ -246,7 +323,8 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-4"><label class="view-label">Minutes Of Meeting</label><span class="float-right view-label">:</span></div>
-                        <div class="col-lg-8"><label><a target="_blank" href="{{basePath}}{{serviceReportViewData?.filePath}}">{{ serviceReportViewData?.orginalFileName | uppercase}}</a></label></div>
+                        <!-- <div class="col-lg-8"><label><a target="_blank" href="{{basePath}}{{serviceReportViewData?.filePath}}">{{ serviceReportViewData?.orginalFileName | uppercase}}</a></label></div> -->
+                        <div class="col-lg-8"><label><a target="_blank" href="{{basePath}}{{serviceReportViewData?.filePath}}">{{ serviceReportViewData?.momFile | uppercase}}</a></label></div>
                     </div>                
                 </div>
                 <br/>

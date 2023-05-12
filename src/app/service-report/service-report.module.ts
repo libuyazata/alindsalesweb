@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DataTableModule } from 'angular-6-datatable';
 import { DownloadReportModule } from '@app/shared/components/download-ctrl/download.module';
 import { NatureOfJobPipeModule } from '@app/shared/pipes/nature-of-job/nature-of-job-pipe.module';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { NatureOfJobPipeModule } from '@app/shared/pipes/nature-of-job/nature-of
     ReactiveFormsModule,
     ServiceReportRoutingModule,
     DownloadReportModule,
-    NatureOfJobPipeModule
+    NatureOfJobPipeModule,
+	NgxPaginationModule,
   ],
   declarations: [
     ServiceReportComponent
