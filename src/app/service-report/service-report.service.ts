@@ -25,8 +25,8 @@ export class ServiceReportService extends BaseService {
     return this.httpClient.get("call/getAllServiceReport", { params : data});
   }
   public getServiceReportListSearched(data:any): Observable<any>{
-	//return this.httpClient.get("call/searchServiceReport", { params : data});
-	return this.httpClient.get("call/searchServiceReportTest", { params : data});
+	return this.httpClient.get("call/searchServiceReport", { params : data});
+	//return this.httpClient.get("call/searchServiceReportTest", { params : data});
   }
 
   public submitServiceReport(report:any): Observable<any>{
