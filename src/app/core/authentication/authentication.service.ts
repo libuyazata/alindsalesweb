@@ -82,7 +82,8 @@ export class AuthenticationService {
 
   doLoginRequest(context: LoginContext) : Observable<any> {
     let httpClient =  this.injector.get(HttpClient);
-    let loginParams = { "userName": context.username, "viewPass": context.password};
+    //let loginParams = { "userName": context.username, "viewPass": context.password};
+    let loginParams = { "userName": context.username, "password": context.password};
     return httpClient.post<any>("user/getAuthentication",  loginParams );
   }
 

@@ -10,9 +10,11 @@ export const environment = {
   production: false,
   version: env.npm_package_version + '-dev',
     
-  basePath : 'http://97.74.85.211:8080/dev-alindsales/',
+  basePath : 'http://97.74.85.211:8080/alindsalesapp/',
+  serverUrl: 'http://97.74.85.211:8080/alindsalesapp/',
+ /*  basePath : 'http://97.74.85.211:8080/dev-alindsales/',
   serverUrl: 'http://97.74.85.211:8080/dev-alindsales/',
-  // basePath : 'http://97.74.85.211:8080/',
+  */ // basePath : 'http://97.74.85.211:8080/',
   //serverUrl: 'http://97.74.85.211:8080/',
   defaultLanguage: 'en-US',
   supportedLanguages: [
