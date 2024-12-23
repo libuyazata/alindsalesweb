@@ -84,9 +84,9 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
         this.callMngtSearchForm.patchValue({"callManagementStatus" : this.callStatusParam});
       }
     });
-    /* this.callManagementService.getEmployeeList( { "departmentId": -1, "designationId" : -1, "searchKeyWord" : ""}).subscribe((resp:any)=>{
+    this.callManagementService.getEmployeeList( { "departmentId": -1, "designationId" : -1, "searchKeyWord" : ""}).subscribe((resp:any)=>{
       this.employeeList = resp.employeeList;
-    });  */   
+    });    
 
     // Load the data.
     this.getCallManagementList(); 
