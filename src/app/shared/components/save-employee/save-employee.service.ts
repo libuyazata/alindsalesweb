@@ -17,7 +17,8 @@ export class SaveEmployeeService extends BaseService {
   }
   
   public getEmployeeDetailsById(employeeId:any): Observable<any> {
-    return this.httpClient.get("user/getUserByUserId", { params : employeeId });
+    //return this.httpClient.get("user/getUserByUserId", { params : employeeId });
+    return this.httpClient.get("get /user/getEmployeeById", { params : employeeId });
   }
 
   public resetPassword(employeeIdInfo:any): Observable<any> {
