@@ -203,7 +203,7 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
   }
   
   public openCallMngtEditModal(callData:any){
-    this.opencalleditEntryForm();
+	this.opencalleditEntryForm();
 	this.callmanagementEditForm.patchValue({"cdId" : callData.cdId});
 	this.callmanagementEditForm.patchValue({"isActive" : callData.isActive});
 	this.callmanagementEditForm.patchValue({"viewAlert" : callData.viewAlert});
@@ -225,8 +225,8 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
 	this.callmanagementEditForm.patchValue({"productDetails" : callData.productDetails});
 	this.callmanagementEditForm.patchValue({"productSlNo" : callData.productSlNo});
 	this.callmanagementEditForm.patchValue({"remarks" : callData.remarks});
-	this.callmanagementEditForm.patchValue({"updatedAt" : this.formatDate(callData.updatedAt)});
-  }
+	this.callmanagementEditForm.patchValue({"updatedAt" : this.formatDatednew(callData.updatedAt)});
+	}
   public formatDate(date:any) {
     const d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -244,6 +244,10 @@ export class CallManagementComponent extends BaseComponent implements OnInit {
     if (month.length < 2) month = '0' + month;
     if (day.length < 2) day = '0' + day;
     return [day, month, year].join('-');
+  }
+  public formatDatednew(date:any) { 
+	var newdate = date.split("-").reverse().join("-");
+	return newdate;
   }
   public oncallEditDetailsSubmitted(){
     this.iscalleditFormAttemptSubmit = true;
